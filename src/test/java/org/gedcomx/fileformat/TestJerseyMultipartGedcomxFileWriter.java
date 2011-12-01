@@ -29,6 +29,7 @@ public class TestJerseyMultipartGedcomxFileWriter {
 
   /**
    * tests the builder methods for the writer.
+   * @throws Exception - When problem occurs
    */
   public void testBuilder() throws Exception {
     JerseyMultipartGedcomxFileWriter writer = new JerseyMultipartGedcomxFileWriter();
@@ -72,6 +73,7 @@ public class TestJerseyMultipartGedcomxFileWriter {
 
   /**
    * Tests the basic structure of the format...
+   * @throws Exception - When problem occurs
    */
   public void testSimpleTextPartWriter() throws Exception {
     JerseyMultipartGedcomxFileWriter writer = new JerseyMultipartGedcomxFileWriter();
@@ -94,6 +96,7 @@ public class TestJerseyMultipartGedcomxFileWriter {
   
   /**
    * Tests writing more complex objects.
+   * @throws Exception - When problem occurs
    */
   public void testWriteMoreComplexObjects() throws Exception {
     JerseyMultipartGedcomxFileWriter writer = new JerseyMultipartGedcomxFileWriter(Record.class, Person.class, Relationship.class, Link.class);
@@ -157,6 +160,7 @@ public class TestJerseyMultipartGedcomxFileWriter {
 
   /**
    * tests the notion of gzipping parts of the message.
+   * @throws Exception - When problem occurs
    */
   public void testGZippedParts() throws Exception {
     //todo: try it out.

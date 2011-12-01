@@ -76,6 +76,7 @@ public class JerseyMultipartGedcomxFileReader implements GedcomxFileReader {
    *
    * @param in The file stream.
    * @param contextClasses The classes with which to initialize the context.
+   * @throws java.io.IOException - An IOException occurred
    */
   public JerseyMultipartGedcomxFileReader(InputStream in, Class<?>... contextClasses) throws IOException {
     this(in, null, contextClasses);
@@ -89,6 +90,7 @@ public class JerseyMultipartGedcomxFileReader implements GedcomxFileReader {
    * @param in The file stream.
    * @param config custom configuration of the multipart reader.
    * @param contextClasses The classes with which to initialize the context.
+   * @throws java.io.IOException - If IO problem occurred
    */
   public JerseyMultipartGedcomxFileReader(InputStream in, MultiPartConfig config, Class<?>... contextClasses) throws IOException {
     this(in, Client.create(createCustomClientConfig(config, contextClasses)));
@@ -125,6 +127,7 @@ public class JerseyMultipartGedcomxFileReader implements GedcomxFileReader {
    *
    * @param in The file stream.
    * @param client The client.
+   * @throws java.io.IOException - If IO problem occurs
    */
   public JerseyMultipartGedcomxFileReader(InputStream in, Client client) throws IOException {
     this.client = client;
@@ -278,6 +281,7 @@ public class JerseyMultipartGedcomxFileReader implements GedcomxFileReader {
       return this.bp.getMediaType().toString();
     }
 
+    @SuppressWarnings("unchecked")
     public Object getContent() throws IOException {
       MediaType mediaType = bp.getMediaType();
       Object entity = bp.getEntity();
