@@ -15,7 +15,7 @@
  */
 package org.gedcomx.fileformat;
 
-import org.gedcomx.rt.GedcomNamespacePrefixMapper;
+import org.gedcomx.rt.GedcomNamespaceManager;
 
 import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;
@@ -62,7 +62,7 @@ public class SpecifiedClassesJAXBContextResolver implements ContextResolver<JAXB
     public Marshaller createMarshaller() throws JAXBException {
       Marshaller marshaller = this.delegate.createMarshaller();
       marshaller.setProperty("jaxb.formatted.output", Boolean.TRUE);
-      marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", new GedcomNamespacePrefixMapper());
+      marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", new GedcomNamespaceManager());
       return marshaller;
     }
 

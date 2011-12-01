@@ -33,7 +33,6 @@ import javax.ws.rs.ext.MessageBodyReader;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchema;
-import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamReader;
@@ -53,7 +52,7 @@ public class JerseyMultipartGedcomxFileReader implements GedcomxFileReader {
   public static final int HEADER_BUFFFER_SIZE = 8 * 1024; //The max size of the header section of the file supported by this reader.
   public static final int BODY_PEEK_BUFFER_SIZE = 4 * 1024; //The number of bytes we can "peek" into head body part in order to discover the type.
 
-  private final Map<QName, Class<?>> knownClasses = new HashMap<QName, Class<?>>();
+  private final Map<String, Class<?>> knownClasses = new HashMap<String, Class<?>>();
   private final Client client;
   private final InBoundHeaders headers = new InBoundHeaders();
   private final Collection<GedcomxFilePart> parts;
@@ -64,6 +63,7 @@ public class JerseyMultipartGedcomxFileReader implements GedcomxFileReader {
    * Construct a writer with default configuration.
    *
    * @param in The file stream.
+   * @throws java.io.IOException -
    */
   public JerseyMultipartGedcomxFileReader(InputStream in) throws IOException {
     this(in, Client.create());
@@ -115,7 +115,7 @@ public class JerseyMultipartGedcomxFileReader implements GedcomxFileReader {
           name = rootElementInfo.name();
         }
 
-        this.knownClasses.put(new QName(ns, name), contextClass);
+        this.knownClasses.put(ns + name, contextClass);
       }
     }
   }
@@ -314,7 +314,8 @@ public class JerseyMultipartGedcomxFileReader implements GedcomxFileReader {
                 }
               }
 
-              associatedClass = knownClasses.get(reader.getName());
+              String name = reader.getName().getNamespaceURI() + reader.getName().getLocalPart();
+              associatedClass = knownClasses.get(name);
             }
             else {
               JsonParser parser = jsonFactory.createJsonParser(in);
@@ -326,9 +327,9 @@ public class JerseyMultipartGedcomxFileReader implements GedcomxFileReader {
                   if ("@type".equalsIgnoreCase(fieldName)) {
                     //we've found the type attribute.
                     if (valueToken == JsonToken.VALUE_STRING) {
-                      String qNameValue = parser.getText();
+                      String qNameValue = parser.getText().toLowerCase();
                       try {
-                        associatedClass = knownClasses.get(QName.valueOf(qNameValue));
+                        associatedClass = knownClasses.get(qNameValue);
                         break;
                       }
                       catch (IllegalArgumentException e) {

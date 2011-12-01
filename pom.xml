@@ -4,11 +4,11 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.gedcomx</groupId>
   <artifactId>gedcomx-fileformat</artifactId>
-  <version>0.4.0.BUILD-SNAPSHOT</version>
+  <version>0.6.0.BUILD-SNAPSHOT</version>
   <name>GEDCOM X - File Format Support</name>
 
   <properties>
-    <gedcomx.model.version>0.4.0.BUILD-SNAPSHOT</gedcomx.model.version>
+    <gedcomx.model.version>0.6.0.BUILD-SNAPSHOT</gedcomx.model.version>
   </properties>
 
   <repositories>
@@ -57,12 +57,6 @@
     <dependency>
       <groupId>org.gedcomx</groupId>
       <artifactId>gedcomx-record</artifactId>
-      <version>${gedcomx.model.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.gedcomx</groupId>
-      <artifactId>gedcomx-source</artifactId>
       <version>${gedcomx.model.version}</version>
       <scope>test</scope>
     </dependency>
