@@ -21,6 +21,7 @@ import com.sun.jersey.core.util.UnmodifiableMultivaluedMap;
 import com.sun.jersey.multipart.BodyPart;
 import com.sun.jersey.multipart.Boundary;
 import com.sun.jersey.multipart.MultiPart;
+import com.sun.jersey.multipart.MultiPartConfig;
 
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
@@ -41,6 +42,7 @@ public class JerseyMultipartGedcomxFileWriter implements GedcomxFileWriter {
   private final MultiPart root;
   private final Client client;
   private final OutBoundHeaders headers = new OutBoundHeaders();
+  private static final MultiPartConfig defaultMultiPartConfig = null;
 
   /**
    * Construct a writer with default configuration.
@@ -57,7 +59,7 @@ public class JerseyMultipartGedcomxFileWriter implements GedcomxFileWriter {
    * @param contextClasses The classes with which to initialize the context.
    */
   public JerseyMultipartGedcomxFileWriter(Class<?>... contextClasses) {
-    this(Client.create(JerseyMultipartGedcomxFileReader.createCustomClientConfig(null, contextClasses)));
+    this(Client.create(JerseyMultipartGedcomxFileReader.createCustomClientConfig(defaultMultiPartConfig, contextClasses)));
   }
 
   /**

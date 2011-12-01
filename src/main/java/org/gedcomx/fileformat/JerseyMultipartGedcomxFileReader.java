@@ -58,6 +58,7 @@ public class JerseyMultipartGedcomxFileReader implements GedcomxFileReader {
   private final Collection<GedcomxFilePart> parts;
   private final XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
   private final JsonFactory jsonFactory = new JsonFactory();
+  private static final MultiPartConfig defaultMultiPartConfig = null;
 
   /**
    * Construct a writer with default configuration.
@@ -79,7 +80,7 @@ public class JerseyMultipartGedcomxFileReader implements GedcomxFileReader {
    * @throws java.io.IOException - An IOException occurred
    */
   public JerseyMultipartGedcomxFileReader(InputStream in, Class<?>... contextClasses) throws IOException {
-    this(in, null, contextClasses);
+    this(in, defaultMultiPartConfig, contextClasses);
   }
 
   /**
