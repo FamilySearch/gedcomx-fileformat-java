@@ -33,6 +33,7 @@ import javax.ws.rs.ext.MessageBodyReader;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchema;
+import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
@@ -54,6 +55,7 @@ public class JerseyMultipartGedcomxFileReader implements GedcomxFileReader {
   public static final int BODY_PEEK_BUFFER_SIZE = 4 * 1024; //The number of bytes we can "peek" into head body part in order to discover the type.
 
   private final Map<QName, Class<?>> knownClasses = new HashMap<QName, Class<?>>();
+  private final Map<String, Class<?>> knownTypes = new HashMap<String, Class<?>>();
   private final Client client;
   private final InBoundHeaders headers = new InBoundHeaders();
   private final Collection<GedcomxFilePart> parts;
@@ -117,6 +119,28 @@ public class JerseyMultipartGedcomxFileReader implements GedcomxFileReader {
 
         this.knownClasses.put(new QName(ns, name), contextClass);
       }
+
+      String name;
+      String ns = "";
+      XmlType typeInfo = contextClass.getAnnotation(XmlType.class);
+      if (typeInfo == null || "##default".equals(typeInfo.namespace())) {
+        Package pkg = contextClass.getPackage();
+        if (pkg != null && pkg.isAnnotationPresent(XmlSchema.class)) {
+          ns = pkg.getAnnotation(XmlSchema.class).namespace();
+        }
+      }
+      else {
+        ns = typeInfo.namespace();
+      }
+
+      if (typeInfo == null || "##default".equals(typeInfo.name())) {
+        name = Introspector.decapitalize(contextClass.getSimpleName());
+      }
+      else {
+        name = typeInfo.name();
+      }
+
+      this.knownTypes.put(ns + name, contextClass);
     }
   }
 
@@ -299,7 +323,7 @@ public class JerseyMultipartGedcomxFileReader implements GedcomxFileReader {
 
         //todo: support for Content-Transfer-Encoding header.
 
-        if (!knownClasses.isEmpty() && (isXml(mediaType) || isJson(mediaType))) {
+        if ((!knownClasses.isEmpty() && isXml(mediaType)) || (!knownTypes.isEmpty() &&  isJson(mediaType))) {
           Class<?> associatedClass = null;
           //this is xml or json; let's see if we recognize an associated class...
           in = new BufferedInputStream(in, BODY_PEEK_BUFFER_SIZE);
@@ -326,13 +350,13 @@ public class JerseyMultipartGedcomxFileReader implements GedcomxFileReader {
                   if ("@type".equalsIgnoreCase(fieldName)) {
                     //we've found the type attribute.
                     if (valueToken == JsonToken.VALUE_STRING) {
-                      String qNameValue = parser.getText();
+                      String uriValue = parser.getText();
                       try {
-                        associatedClass = knownClasses.get(QName.valueOf(qNameValue));
+                        associatedClass = knownTypes.get(uriValue);
                         break;
                       }
                       catch (IllegalArgumentException e) {
-                        throw new IOException("Invalid QName string for '@type' attribute: " + qNameValue);
+                        throw new IOException("Invalid QName string for '@type' attribute: " + uriValue);
                       }
                     }
                     else {
