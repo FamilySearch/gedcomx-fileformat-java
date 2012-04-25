@@ -15,9 +15,9 @@
  */
 package org.gedcomx.fileformat;
 
-import javax.ws.rs.core.MediaType;
 import java.io.IOException;
-import java.io.OutputStream;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Standard interface for writing a GEDCOM X file.
@@ -26,31 +26,34 @@ import java.io.OutputStream;
  */
 public interface GedcomxFileWriter {
 
-  MediaType MEDIA_TYPE = MediaType.valueOf("multipart/x-gedcom-v1");
+  /**
+   * Add an attribute to the GEDCOM X file.
+   *
+   * @param name The name of the attribute.
+   * @param value The value of the attribute.
+   */
+  void addAttribute(String name, String value);
 
   /**
-   * Add a part to the file.
+   * Add a resource to the GEDCOM X file.
    *
-   * @param mediaType The media type for the part. Examples include "image/png", "application/x-gedcom-conclusion-v1+xml", etc.
-   * @param content The content. Possible types include a JAXB root element, a string, or an InputStream.
-   * @return The content id for the type.
+   * @param contentType the content type of the resource.
+   * @param resource The resource.
    */
-  String addPart(String mediaType, Object content);
+  void addResource(String contentType, Object resource);
 
   /**
-   * Set a specific header for this part.
+   * Add a resource to the GEDCOM X file.
    *
-   * @param name The header name.
-   * @param value The header value.
-   * @throws IllegalArgumentException If <tt>name</tt> doesn't start with "Content-".
+   * @param contentType the content type of the resource.
+   * @param resource The resource.
+   * @param attributes The attributes of the resource.
    */
-  void setHeader(String name, String value);
+  void addResource(String contentType, Object resource, Map<String, List<String>> attributes);
 
   /**
-   * Writes this file.
-   *
-   * @param out The output stream to write to.
-   * @throws IOException If there was a problem writing the file.
+   * Close the writer.
    */
-  void writeTo(OutputStream out) throws IOException;
+  void close() throws IOException;
+
 }

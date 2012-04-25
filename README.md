@@ -8,44 +8,13 @@ the [GEDCOM X project](https://github.com/FamilySearch/gedcomx).
 Here's how you read a file:
 
 ```java
-InputStream in = new FileInputStream("/path/to/gedcomx/file");
-GedcomxFileReader reader = new new JerseyMultipartGedcomxFileReader(in, Record.class, Person.class);
-Collection<GedcomxFilePart> parts = reader.getParts();
-for (GedcomxFilePart part : parts) {
-  Object content = part.getContent();
-  if (content instanceof Record) {
-    Record record = (Record) content;
-    //handle the record as needed.
-  }
-  else if (content instanceof Person) {
-    Person person = (Person) content;
-    //handle the person as needed.
-  }
-  else if (content instanceof InputStream) {
-    InputStream stream = (InputStream) content;
-    if ("image/jpeg".equals(part.getMediaType())) {
-      //handle the stream as a picture.
-    }
-    else {
-      //...
-    }
-  }
-}
+//todo: example code for reading the file.
 ```
 
 Here's how you write a file:
 
 ```java
-GedcomxFileWriter writer = new JerseyMultipartGedcomxFileWriter();
-Record record = ...;
-writer.addPart("application/x-gedcom-record-v1+xml", record);
-Person person = ...;
-writer.addPart("application/x-gedcom-conclusion-v1+xml", person);
-InputStream image = new FileInputStream("/path/to/some/image.jpg");
-writer.addPart("image/jpeg", image);
-
-OutputStream out = new FileOutputStream("/path/to/file/to/write");
-writer.writeTo(out);
+//todo: example code for writing the file...
 ```
 
 Using the Library

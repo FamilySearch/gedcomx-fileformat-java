@@ -15,16 +15,24 @@
  */
 package org.gedcomx.fileformat;
 
-import java.util.Collection;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
 /**
- * Standard interface for reading a GEDCOM X file.
+ * Part of a GEDCOM X file.
  *
  * @author Ryan Heaton
  */
-public interface GedcomxFileReader {
+public interface GedcomxFileEntry {
+
+  /**
+   * The content type of the part.
+   *
+   * @return The content type of the part.
+   */
+  String getContentType();
 
   /**
    * Get the first value of the specified attribute.
@@ -35,16 +43,25 @@ public interface GedcomxFileReader {
   String getAttribute(String name);
 
   /**
-   * Get the attributes for the file.
+   * Get the attributes for the entry.
    *
    * @return The attributes.
    */
   Map<String, List<String>> getAttributes();
 
   /**
-   * Get the parts of the file.
+   * Get the input stream of the resource.
    *
-   * @return The parts of the file.
+   * @return The input stream that constitutes the nature of the resource.
    */
-  Collection<GedcomxFileEntry> getParts();
+  InputStream getResourceStream();
+
+  /**
+   * Unmarshal the resource as an object.
+   *
+   * @return The resource.
+   * @throws IOException If there was a problem unmarshalling the resource.
+   */
+  Object readResource() throws IOException;
+
 }
