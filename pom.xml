@@ -26,7 +26,12 @@
     </dependency>
     <dependency>
       <groupId>org.gedcomx</groupId>
-      <artifactId>gedcomx-rt-support</artifactId>
+      <artifactId>gedcomx-conclusion</artifactId>
+      <version>${gedcomx.model.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.gedcomx</groupId>
+      <artifactId>gedcomx-metadata</artifactId>
       <version>${gedcomx.model.version}</version>
     </dependency>
 
@@ -41,18 +46,6 @@
       <groupId>javax.mail</groupId>
       <artifactId>mail</artifactId>
       <version>1.4.1</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.gedcomx</groupId>
-      <artifactId>gedcomx-conclusion</artifactId>
-      <version>${gedcomx.model.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.gedcomx</groupId>
-      <artifactId>gedcomx-metadata</artifactId>
-      <version>${gedcomx.model.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

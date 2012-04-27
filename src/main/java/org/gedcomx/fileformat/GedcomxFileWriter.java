@@ -1,5 +1,5 @@
 /**
- * Copyright 2011 Intellectual Reserve, Inc.
+ * Copyright 2012 Intellectual Reserve, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
  */
 package org.gedcomx.fileformat;
 
+import java.io.Closeable;
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,7 +24,7 @@ import java.util.Map;
  *
  * @author Ryan Heaton
  */
-public interface GedcomxFileWriter {
+public interface GedcomxFileWriter extends Closeable {
 
   /**
    * Add an attribute to the GEDCOM X file.
@@ -37,19 +37,21 @@ public interface GedcomxFileWriter {
   /**
    * Add a resource to the GEDCOM X file.
    *
-   * @param contentType the content type of the resource.
+   * @param contentType The content type of the resource.
+   * @param entryName The name by which this resource shall be known within the GEDCOM X file.
    * @param resource The resource.
    */
-  void addResource(String contentType, Object resource);
+  void addResource(String contentType, String entryName, Object resource) throws IOException;
 
   /**
    * Add a resource to the GEDCOM X file.
    *
-   * @param contentType the content type of the resource.
+   * @param contentType The content type of the resource.
+   * @param entryName The name by which this resource shall be known within the GEDCOM X file.
    * @param resource The resource.
    * @param attributes The attributes of the resource.
    */
-  void addResource(String contentType, Object resource, Map<String, List<String>> attributes);
+  void addResource(String contentType, String entryName, Object resource, Map<String, String> attributes) throws IOException;
 
   /**
    * Close the writer.
