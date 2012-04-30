@@ -15,14 +15,8 @@
  */
 package org.gedcomx.fileformat.impl;
 
-import org.gedcomx.conclusion.Person;
-import org.gedcomx.conclusion.Relationship;
-import org.gedcomx.fileformat.GedcomxFileWriter;
-import org.gedcomx.metadata.dc.ObjectFactory;
-import org.gedcomx.metadata.rdf.Description;
 import org.gedcomx.rt.GedcomNamespaceManager;
 
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import java.io.IOException;
@@ -31,23 +25,36 @@ import java.util.*;
 import java.util.jar.*;
 
 
-public class GedcomxFileWriterImpl implements GedcomxFileWriter {
+/**
+ * Class to help in writing a GEDCOM X file.
+ */
+public class GedcomxOutputStream {
 
   private final Marshaller jaxbMarshaller;
   private final JarOutputStream gedxOutputStream;
   private final Manifest mf;
 
-  public GedcomxFileWriterImpl(OutputStream gedxOutputStream, Class<?>... classes) throws IOException, JAXBException {
-    Set<Class<?>> contextClasses = new HashSet<Class<?>>(Arrays.asList(
-          Person.class
-        , org.gedcomx.metadata.foaf.Person.class
-        , Relationship.class
-        , Description.class
-        , ObjectFactory.class));
-    contextClasses.addAll(Arrays.asList(classes));
-    this.jaxbMarshaller = JAXBContext.newInstance((Class<?>[])contextClasses.toArray(new Class<?>[contextClasses.size()])).createMarshaller();
-    this.jaxbMarshaller.setProperty("jaxb.formatted.output", Boolean.TRUE);
-    this.jaxbMarshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", new GedcomNamespaceManager());
+  /**
+   * Constructs a GEDCOM X output stream.
+   *
+   * NOTE: This class uses the GedcomXFileJAXBContextFactory to create a JAXB context from which to derive the marshaller that is used to marshal resources into the output stream.
+   * GedcomXFileJAXBContextFactory creates a context that includes some default resource classes.  The classes passed via this constructor will supplement these defaults; they will
+   * not overwrite or replace these defaults.  Please see the documentation for GedcomXFileJAXBContextFactory to review the list of default classes.
+   *
+   * @param gedxOutputStream an output stream to which the GEDCOM X resources will appended
+   * @param classes classes representing resources that will be marshaled (via JAXB) into the GEDCOM X output stream
+   *
+   * @throws IOException
+   */
+  public GedcomxOutputStream(OutputStream gedxOutputStream, Class<?>... classes) throws IOException {
+    try {
+      this.jaxbMarshaller = GedcomXFileJAXBContextFactory.newInstance(classes).createMarshaller();
+      this.jaxbMarshaller.setProperty("jaxb.formatted.output", Boolean.TRUE);
+      this.jaxbMarshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", new GedcomNamespaceManager());
+    }
+    catch (JAXBException ex) {
+      throw new IOException(ex);
+    }
 
     this.gedxOutputStream = new JarOutputStream(gedxOutputStream);
 
@@ -55,14 +62,41 @@ public class GedcomxFileWriterImpl implements GedcomxFileWriter {
     this.mf.getMainAttributes().put(Attributes.Name.MANIFEST_VERSION, "1.0");
   }
 
+  /**
+   * Add an attribute to the GEDCOM X output stream.
+   *
+   * @param name The name of the attribute.
+   * @param value The value of the attribute.
+   *
+   * @throws IOException
+   */
   public void addAttribute(String name, String value) {
     this.mf.getMainAttributes().putValue(name, value);
   }
 
+  /**
+   * Add a resource to the GEDCOM X output stream.
+   *
+   * @param contentType The content type of the resource.
+   * @param entryName The name by which this resource shall be known within the GEDCOM X file.
+   * @param resource The resource.
+   *
+   * @throws IOException
+   */
   public void addResource(String contentType, String entryName, Object resource) throws IOException {
     addResource(contentType, entryName, resource, null);
   }
 
+  /**
+   * Add a resource to the GEDCOM X output stream.
+   *
+   * @param contentType The content type of the resource.
+   * @param entryName The name by which this resource shall be known within the GEDCOM X file.
+   * @param resource The resource.
+   * @param attributes The attributes of the resource.
+   *
+   * @throws IOException
+   */
   public void addResource(String contentType, String entryName, Object resource, Map<String, String> attributes) throws IOException {
     if (contentType.trim().length() == 0) {
       throw new IllegalArgumentException("contentType must not be null or empty.");
@@ -87,6 +121,11 @@ public class GedcomxFileWriterImpl implements GedcomxFileWriter {
     }
   }
 
+  /**
+   * Closes the GEDCOM X output stream as well as the stream being filtered.
+   *
+   * @throws IOException
+   */
   public void close() throws IOException {
     this.gedxOutputStream.putNextEntry(new JarEntry(JarFile.MANIFEST_NAME));
     this.mf.write(this.gedxOutputStream);

@@ -18,7 +18,6 @@ package org.gedcomx.fileformat.impl;
 import org.gedcomx.conclusion.ConclusionModel;
 import org.gedcomx.conclusion.Person;
 import org.gedcomx.conclusion.Relationship;
-import org.gedcomx.fileformat.GedcomxFileWriter;
 import org.gedcomx.metadata.rdf.Description;
 import org.testng.annotations.Test;
 
@@ -33,28 +32,28 @@ public class GedcomxFileWriterImplTest {
     try {
       List<Object> resources = ExampleGedcomxFileData.create();
 
-      GedcomxFileWriter gedxFileWriter = new GedcomxFileWriterImpl(new FileOutputStream(gedxFile));
+      GedcomxOutputStream gedxOutputStream = new GedcomxOutputStream(new FileOutputStream(gedxFile));
       try {
-        gedxFileWriter.addAttribute("GX-Root", "/persons/98765");
+        gedxOutputStream.addAttribute("GX-Root", "/persons/98765");
         for (Object resource : resources) {
           if (resource instanceof Person) {
             Person person = (Person)resource;
-            gedxFileWriter.addResource(ConclusionModel.GEDCOMX_CONCLUSION_V1_XML_MEDIA_TYPE
+            gedxOutputStream.addResource(ConclusionModel.GEDCOMX_CONCLUSION_V1_XML_MEDIA_TYPE
               , "/persons/" + person.getId()
               , person);
           } else if (resource instanceof Relationship) {
             Relationship relationship = (Relationship)resource;
-            gedxFileWriter.addResource(ConclusionModel.GEDCOMX_CONCLUSION_V1_XML_MEDIA_TYPE
+            gedxOutputStream.addResource(ConclusionModel.GEDCOMX_CONCLUSION_V1_XML_MEDIA_TYPE
               , "\\relationships\\" + relationship.getId()
               , relationship);
           } else if (resource instanceof org.gedcomx.metadata.foaf.Person) {
             org.gedcomx.metadata.foaf.Person person = (org.gedcomx.metadata.foaf.Person)resource;
-            gedxFileWriter.addResource(ConclusionModel.GEDCOMX_CONCLUSION_V1_XML_MEDIA_TYPE
+            gedxOutputStream.addResource(ConclusionModel.GEDCOMX_CONCLUSION_V1_XML_MEDIA_TYPE
               , "/contributors/" + person.getId()
               , person);
           } else if (resource instanceof Description) {
             Description description = (Description)resource;
-            gedxFileWriter.addResource(ConclusionModel.GEDCOMX_CONCLUSION_V1_XML_MEDIA_TYPE
+            gedxOutputStream.addResource(ConclusionModel.GEDCOMX_CONCLUSION_V1_XML_MEDIA_TYPE
               , "/descriptions/" + description.getId()
               , description);
           } else {
@@ -62,7 +61,7 @@ public class GedcomxFileWriterImplTest {
           }
         }
       } finally {
-        gedxFileWriter.close();
+        gedxOutputStream.close();
       }
       System.currentTimeMillis();
     } finally {
