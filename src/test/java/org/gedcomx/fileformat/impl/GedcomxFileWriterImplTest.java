@@ -24,15 +24,22 @@ import org.testng.annotations.Test;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.List;
+import java.util.Map;
+import java.util.jar.Attributes;
+import java.util.jar.JarFile;
+
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
+
 
 public class GedcomxFileWriterImplTest {
   @Test
   public void testWriter() throws Exception {
-    File gedxFile = File.createTempFile("FsTestTmp", ".gedx");
+    File tempFile = File.createTempFile("FsTestTmp", ".gedx");
     try {
       List<Object> resources = ExampleGedcomxFileData.create();
 
-      GedcomxOutputStream gedxOutputStream = new GedcomxOutputStream(new FileOutputStream(gedxFile));
+      GedcomxOutputStream gedxOutputStream = new GedcomxOutputStream(new FileOutputStream(tempFile));
       try {
         gedxOutputStream.addAttribute("GX-Root", "/persons/98765");
         for (Object resource : resources) {
@@ -63,9 +70,45 @@ public class GedcomxFileWriterImplTest {
       } finally {
         gedxOutputStream.close();
       }
-      System.currentTimeMillis();
+
+      JarFile jarFile = new JarFile(tempFile);
+      try {
+        GedcomxFile gedxFile = new GedcomxFile(jarFile);
+        try {
+          jarFile = null; // setting to null so the finally block will not attempt to close it as it was successfully wrapped in the gedxFile
+
+          Map<String,String> attributes = gedxFile.getAttributes();
+          for (Map.Entry<String, String> entry : attributes.entrySet()) {
+            String value = gedxFile.getAttribute(entry.getKey());
+            assertEquals(value, entry.getValue());
+          }
+          assertTrue(attributes.containsKey("GX-Root"));
+
+          for (GedcomxFileEntry gedxEntry : gedxFile.getEntries()) {
+            String name = gedxEntry.getJarEntry().getName();
+            if ((name != null) && (!"META-INF/MANIFEST.MF".equals(name))) {
+              Map<String,String> entryAttributes = gedxEntry.getAttributes();
+              for (Map.Entry<String, String> entry : entryAttributes.entrySet()) {
+                String value = gedxEntry.getAttribute(entry.getKey());
+                assertEquals(value, entry.getValue());
+              }
+              assertTrue(entryAttributes.containsKey(Attributes.Name.CONTENT_TYPE.toString()));
+
+              Object resource = gedxFile.readResource(gedxEntry);
+              ExampleGedcomxFileData.assertContains(resource, resources);
+            }
+          }
+        } finally {
+          gedxFile.close();
+        }
+      } finally {
+        if (jarFile != null) {
+          // file was opened, but not successfully wrapped
+          jarFile.close();
+        }
+      }
     } finally {
-      gedxFile.delete();
+      tempFile.delete();
     }
   }
 }

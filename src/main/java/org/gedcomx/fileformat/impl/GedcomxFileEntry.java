@@ -81,10 +81,13 @@ public class GedcomxFileEntry {
   public Map<String, String> getAttributes() throws IOException {
     Map<String, String> attributesMap = new HashMap<String, String>();
 
-    for (Attributes.Entry entry : this.jarEntry.getAttributes().entrySet()) {
-      String key = entry.getKey().toString();
-      String value = (String)entry.getValue();
-      attributesMap.put(key, value);
+    Attributes attributes = this.jarEntry.getAttributes();
+    if (attributes != null) {
+      for (Attributes.Entry entry : attributes.entrySet()) {
+        String key = entry.getKey().toString();
+        String value = (String)entry.getValue();
+        attributesMap.put(key, value);
+      }
     }
 
     return attributesMap;

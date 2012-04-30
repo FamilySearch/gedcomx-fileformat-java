@@ -103,7 +103,9 @@ public class GedcomxOutputStream {
     }
 
     entryName = entryName.replaceAll("\\\\", "/");
-    JarEntry gedxEntry = new JarEntry(entryName.charAt(0) == '/' ? entryName.substring(1) : entryName); // will throw a runtime exception if entryName is not okay
+    entryName = entryName.charAt(0) == '/' ? entryName.substring(1) : entryName;
+
+    JarEntry gedxEntry = new JarEntry(entryName); // will throw a runtime exception if entryName is not okay
     this.mf.getEntries().put(entryName, new Attributes());
 
     this.mf.getAttributes(entryName).put(Attributes.Name.CONTENT_TYPE, contentType);
