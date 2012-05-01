@@ -58,4 +58,6 @@ public class GedcomXFileJAXBContextFactory {
     contextClasses.addAll(Arrays.asList(classes));
     return JAXBContext.newInstance((Class<?>[]) contextClasses.toArray(new Class<?>[contextClasses.size()]));
   }
+
+  private GedcomXFileJAXBContextFactory() {} // utility class; not intended to be instantiated; formated to reduce effect on code coverage analysis; addresses SONAR issue
 }

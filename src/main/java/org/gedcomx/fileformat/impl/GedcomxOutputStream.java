@@ -67,8 +67,6 @@ public class GedcomxOutputStream {
    *
    * @param name The name of the attribute.
    * @param value The value of the attribute.
-   *
-   * @throws IOException
    */
   public void addAttribute(String name, String value) {
     this.mf.getMainAttributes().putValue(name, value);
@@ -110,7 +108,9 @@ public class GedcomxOutputStream {
 
     this.mf.getAttributes(entryName).put(Attributes.Name.CONTENT_TYPE, contentType);
     if (attributes != null) {
-      this.mf.getAttributes(entryName).putAll(attributes);
+      for (Map.Entry<String, String> entry : attributes.entrySet()) {
+        this.mf.getAttributes(entryName).putValue(entry.getKey(), entry.getValue());
+      }
     }
 
     this.gedxOutputStream.putNextEntry(gedxEntry);
