@@ -8,6 +8,7 @@
   <name>GEDCOM X - File Format Support</name>
 
   <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <gedcomx.model.version>0.16.0</gedcomx.model.version>
   </properties>
 
