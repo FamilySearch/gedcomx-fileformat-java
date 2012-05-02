@@ -137,6 +137,13 @@
                 <format>xml</format>
                 <format>html</format>
               </formats>
+              <instrumentation>
+                <ignores>
+                  <ignore>com.*</ignore>
+                  <ignore>net.*</ignore>
+                  <ignore>org.apache.*</ignore>
+                </ignores>
+              </instrumentation>
             </configuration>
             <executions>
               <execution>
