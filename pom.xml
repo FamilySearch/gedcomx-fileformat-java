@@ -57,8 +57,8 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
           <encoding>UTF-8</encoding>
-          <source>1.5</source>
-          <target>1.5</target>
+          <source>1.6</source>
+          <target>1.6</target>
         </configuration>
       </plugin>
       <plugin>
@@ -183,6 +183,7 @@
             <artifactId>findbugs-maven-plugin</artifactId>
             <version>2.4.0</version>
             <configuration>
+              <encoding>UTF-8</encoding>
               <findbugsXmlOutput>true</findbugsXmlOutput>
             </configuration>
             <executions>
@@ -202,6 +203,7 @@
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>findbugs-maven-plugin</artifactId>
             <configuration>
+              <encoding>UTF-8</encoding>
               <xmlOutput>true</xmlOutput>
               <findbugsXmlOutput>true</findbugsXmlOutput>
               <threshold>Normal</threshold>
