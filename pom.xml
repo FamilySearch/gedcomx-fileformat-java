@@ -72,9 +72,12 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <systemPropertyVariables>
-            <show.output>${show.output}</show.output>
-          </systemPropertyVariables>
+          <systemProperties>
+            <property>
+              <name>show.output</name>
+              <value>${show.output}</value>
+            </property>
+          </systemProperties>
         </configuration>
       </plugin>
       <plugin>
@@ -158,6 +161,10 @@
               <version>2.5</version>
               <configuration>
                 <targetJdk>1.6</targetJdk>
+                <formats>
+                  <format>xml</format>
+                  <format>html</format>
+                </formats>
                 <excludes>
                   <exclude>**/package-info.java</exclude>
                 </excludes>
