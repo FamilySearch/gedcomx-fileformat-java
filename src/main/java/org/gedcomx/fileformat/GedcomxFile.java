@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.gedcomx.fileformat.impl;
+package org.gedcomx.fileformat;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;

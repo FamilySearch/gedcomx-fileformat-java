@@ -13,11 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.gedcomx.fileformat.impl;
+package org.gedcomx.fileformat;
 
 import org.gedcomx.conclusion.ConclusionModel;
 import org.gedcomx.conclusion.Person;
 import org.gedcomx.conclusion.Relationship;
+import org.gedcomx.fileformat.GedcomxFile;
+import org.gedcomx.fileformat.GedcomxFileEntry;
+import org.gedcomx.fileformat.GedcomxOutputStream;
 import org.gedcomx.metadata.rdf.Description;
 import org.testng.annotations.Test;
 
@@ -70,14 +73,16 @@ public class GedcomxFileWriteReadTest {
 
       GedcomxOutputStream gedxOutputStream = new GedcomxOutputStream(new FileOutputStream(tempFile));
       final String GX_ROOT = "GX-Root";
+      final String CREATED_BY = "Created-By";
+      final String createdByValue = "FamilySearch Platform API 0.1";
+      final String gxRootRef = "persons/98765";
       try {
-        String gxRoot = "persons/98765";
-        gedxOutputStream.addAttribute(GX_ROOT, gxRoot);
+        gedxOutputStream.addAttribute(CREATED_BY, createdByValue);
         for (Object resource : resources) {
           if (resource instanceof Person) {
             Person person = (Person)resource;
             String entryName = "persons/" + person.getId();
-            if (entryName.equals(gxRoot)) {
+            if (entryName.equals(gxRootRef)) {
               Map<String, String> additionalAttribs = new HashMap<String, String>(1);
               additionalAttribs.put(GX_ROOT, Boolean.TRUE.toString());
               gedxOutputStream.addResource(ConclusionModel.GEDCOMX_CONCLUSION_V1_XML_MEDIA_TYPE
@@ -123,8 +128,8 @@ public class GedcomxFileWriteReadTest {
             String value = gedxFile.getAttribute(entry.getKey());
             assertEquals(value, entry.getValue());
           }
-          assertTrue(attributes.containsKey(GX_ROOT));
-          String gxRoot = attributes.get(GX_ROOT);
+          assertTrue(attributes.containsKey(CREATED_BY));
+          assertEquals(attributes.get(CREATED_BY), createdByValue);
 
           for (GedcomxFileEntry gedxEntry : gedxFile.getEntries()) {
             String name = gedxEntry.getJarEntry().getName();
@@ -136,7 +141,7 @@ public class GedcomxFileWriteReadTest {
                 assertEquals(value, entry.getValue());
               }
               assertTrue(entryAttributes.containsKey(Attributes.Name.CONTENT_TYPE.toString()));
-              if (name.equals(gxRoot)) {
+              if (name.equals(gxRootRef)) {
                 assertTrue(Boolean.parseBoolean(entryAttributes.get(GX_ROOT)));
               }
 
