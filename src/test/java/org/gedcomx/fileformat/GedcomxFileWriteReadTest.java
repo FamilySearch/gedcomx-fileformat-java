@@ -18,9 +18,6 @@ package org.gedcomx.fileformat;
 import org.gedcomx.conclusion.ConclusionModel;
 import org.gedcomx.conclusion.Person;
 import org.gedcomx.conclusion.Relationship;
-import org.gedcomx.fileformat.GedcomxFile;
-import org.gedcomx.fileformat.GedcomxFileEntry;
-import org.gedcomx.fileformat.GedcomxOutputStream;
 import org.gedcomx.metadata.rdf.Description;
 import org.testng.annotations.Test;
 
