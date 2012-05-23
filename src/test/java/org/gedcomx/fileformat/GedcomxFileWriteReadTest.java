@@ -85,7 +85,8 @@ public class GedcomxFileWriteReadTest {
               gedxOutputStream.addResource(ConclusionModel.GEDCOMX_CONCLUSION_V1_XML_MEDIA_TYPE
                 , entryName
                 , person
-                , null);
+                , null
+                , additionalAttribs);
             } else {
               gedxOutputStream.addResource(ConclusionModel.GEDCOMX_CONCLUSION_V1_XML_MEDIA_TYPE
                 , entryName

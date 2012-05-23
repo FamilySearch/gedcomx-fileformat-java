@@ -82,8 +82,8 @@ public class GedcomxOutputStream {
    * @param lastModified timestamp when the resource was last modified (can be null)
    * @throws IOException
    */
-  public JarEntry addResource(String contentType, String entryName, Object resource, Date lastModified) throws IOException {
-    return addResource(contentType, entryName, resource, null, lastModified);
+  public void addResource(String contentType, String entryName, Object resource, Date lastModified) throws IOException {
+    addResource(contentType, entryName, resource, lastModified, null);
   }
 
   /**
@@ -92,12 +92,12 @@ public class GedcomxOutputStream {
    * @param contentType The content type of the resource.
    * @param entryName The name by which this resource shall be known within the GEDCOM X file.
    * @param resource The resource.
-   * @param attributes The attributes of the resource.
    * @param lastModified timestamp when the resource was last modified (can be null)
+   * @param attributes The attributes of the resource.
    *
    * @throws IOException
    */
-  public JarEntry addResource(String contentType, String entryName, Object resource, Map<String, String> attributes, Date lastModified) throws IOException {
+  public void addResource(String contentType, String entryName, Object resource, Date lastModified, Map<String, String> attributes) throws IOException {
     if (contentType.trim().length() == 0) {
       throw new IllegalArgumentException("contentType must not be null or empty.");
     }
@@ -107,8 +107,11 @@ public class GedcomxOutputStream {
 
     JarEntry gedxEntry = new JarEntry(entryName); // will throw a runtime exception if entryName is not okay
     this.mf.getEntries().put(entryName, new Attributes());
-    if (lastModified != null)
-      gedxEntry.setTime(lastModified.getTime());
+
+    if (lastModified != null) {
+      String formattedLastModified = lastModified.toString(); // TODO: need to format this appropriately
+      this.mf.getAttributes(entryName).putValue("Last-Modified", formattedLastModified);
+    }
 
     this.mf.getAttributes(entryName).put(Attributes.Name.CONTENT_TYPE, contentType);
     if (attributes != null) {
@@ -125,7 +128,6 @@ public class GedcomxOutputStream {
     catch (JAXBException ex) {
       throw new IOException(ex);
     }
-    return gedxEntry;
   }
 
   /**
