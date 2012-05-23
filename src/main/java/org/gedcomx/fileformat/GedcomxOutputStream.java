@@ -75,14 +75,15 @@ public class GedcomxOutputStream {
   /**
    * Add a resource to the GEDCOM X output stream.
    *
+   *
    * @param contentType The content type of the resource.
    * @param entryName The name by which this resource shall be known within the GEDCOM X file.
    * @param resource The resource.
-   *
+   * @param lastModified timestamp when the resource was last modified (can be null)
    * @throws IOException
    */
-  public void addResource(String contentType, String entryName, Object resource) throws IOException {
-    addResource(contentType, entryName, resource, null);
+  public JarEntry addResource(String contentType, String entryName, Object resource, Date lastModified) throws IOException {
+    return addResource(contentType, entryName, resource, null, lastModified);
   }
 
   /**
@@ -92,10 +93,11 @@ public class GedcomxOutputStream {
    * @param entryName The name by which this resource shall be known within the GEDCOM X file.
    * @param resource The resource.
    * @param attributes The attributes of the resource.
+   * @param lastModified timestamp when the resource was last modified (can be null)
    *
    * @throws IOException
    */
-  public void addResource(String contentType, String entryName, Object resource, Map<String, String> attributes) throws IOException {
+  public JarEntry addResource(String contentType, String entryName, Object resource, Map<String, String> attributes, Date lastModified) throws IOException {
     if (contentType.trim().length() == 0) {
       throw new IllegalArgumentException("contentType must not be null or empty.");
     }
@@ -105,6 +107,8 @@ public class GedcomxOutputStream {
 
     JarEntry gedxEntry = new JarEntry(entryName); // will throw a runtime exception if entryName is not okay
     this.mf.getEntries().put(entryName, new Attributes());
+    if (lastModified != null)
+      gedxEntry.setTime(lastModified.getTime());
 
     this.mf.getAttributes(entryName).put(Attributes.Name.CONTENT_TYPE, contentType);
     if (attributes != null) {
@@ -121,6 +125,7 @@ public class GedcomxOutputStream {
     catch (JAXBException ex) {
       throw new IOException(ex);
     }
+    return gedxEntry;
   }
 
   /**

@@ -85,27 +85,31 @@ public class GedcomxFileWriteReadTest {
               gedxOutputStream.addResource(ConclusionModel.GEDCOMX_CONCLUSION_V1_XML_MEDIA_TYPE
                 , entryName
                 , person
-                , additionalAttribs);
+                , null);
             } else {
               gedxOutputStream.addResource(ConclusionModel.GEDCOMX_CONCLUSION_V1_XML_MEDIA_TYPE
                 , entryName
-                , person);
+                , person
+                , null);
             }
           } else if (resource instanceof Relationship) {
             Relationship relationship = (Relationship)resource;
             gedxOutputStream.addResource(ConclusionModel.GEDCOMX_CONCLUSION_V1_XML_MEDIA_TYPE
               , "\\relationships\\" + relationship.getId()
-              , relationship);
+              , relationship
+              , null);
           } else if (resource instanceof org.gedcomx.metadata.foaf.Person) {
             org.gedcomx.metadata.foaf.Person person = (org.gedcomx.metadata.foaf.Person)resource;
             gedxOutputStream.addResource(ConclusionModel.GEDCOMX_CONCLUSION_V1_XML_MEDIA_TYPE
               , "contributors/" + person.getId()
-              , person);
+              , person
+              , null);
           } else if (resource instanceof Description) {
             Description description = (Description)resource;
             gedxOutputStream.addResource(ConclusionModel.GEDCOMX_CONCLUSION_V1_XML_MEDIA_TYPE
               , "descriptions/" + description.getId()
-              , description);
+              , description
+              , null);
           } else {
             // TODO: Dublin Core ObjectFactory Types?
           }
@@ -170,7 +174,8 @@ public class GedcomxFileWriteReadTest {
       try {
         gedxOutputStream.addResource(ConclusionModel.GEDCOMX_CONCLUSION_V1_XML_MEDIA_TYPE
           , "myTestClass"
-          , myTestClass);
+          , myTestClass
+          , null);
       } finally {
         gedxOutputStream.close();
       }
@@ -221,7 +226,8 @@ public class GedcomxFileWriteReadTest {
       try {
         gedxOutputStream.addResource(ConclusionModel.GEDCOMX_CONCLUSION_V1_XML_MEDIA_TYPE
           , "myTestClass"
-          , myTestClass);
+          , myTestClass
+          , null);
       } finally {
         gedxOutputStream.close();
       }
@@ -279,30 +285,30 @@ public class GedcomxFileWriteReadTest {
   @Test(expectedExceptions = NullPointerException.class)
   public void testGedcomxOutputStreamAddResourceNullPointerException1() throws IOException {
     GedcomxOutputStream gedxOutputStream = new GedcomxOutputStream(new ByteArrayOutputStream());
-    gedxOutputStream.addResource(null, null, null);
+    gedxOutputStream.addResource(null, null, null, null);
   }
 
   @Test(expectedExceptions = IllegalArgumentException.class)
   public void testGedcomxOutputStreamAddResourceIllegalArgumentException1() throws IOException {
     GedcomxOutputStream gedxOutputStream = new GedcomxOutputStream(new ByteArrayOutputStream());
-    gedxOutputStream.addResource("", null, null);
+    gedxOutputStream.addResource("", null, null, null);
   }
 
   @Test(expectedExceptions = NullPointerException.class)
   public void testGedcomxOutputStreamAddResourceNullPointerException2() throws IOException {
     GedcomxOutputStream gedxOutputStream = new GedcomxOutputStream(new ByteArrayOutputStream());
-    gedxOutputStream.addResource(ConclusionModel.GEDCOMX_CONCLUSION_V1_XML_MEDIA_TYPE, null, null);
+    gedxOutputStream.addResource(ConclusionModel.GEDCOMX_CONCLUSION_V1_XML_MEDIA_TYPE, null, null, null);
   }
 
   @Test(expectedExceptions = IllegalArgumentException.class)
   public void testGedcomxOutputStreamAddResourceIllegalArgumentException2() throws IOException {
     GedcomxOutputStream gedxOutputStream = new GedcomxOutputStream(new ByteArrayOutputStream());
-    gedxOutputStream.addResource(ConclusionModel.GEDCOMX_CONCLUSION_V1_XML_MEDIA_TYPE, "junk", null);
+    gedxOutputStream.addResource(ConclusionModel.GEDCOMX_CONCLUSION_V1_XML_MEDIA_TYPE, "junk", null, null);
   }
 
   @Test(expectedExceptions = IOException.class)
   public void testGedcomxOutputStreamAddResourceIllegalArgumentException3() throws IOException {
     GedcomxOutputStream gedxOutputStream = new GedcomxOutputStream(new ByteArrayOutputStream());
-    gedxOutputStream.addResource(ConclusionModel.GEDCOMX_CONCLUSION_V1_XML_MEDIA_TYPE, "junk", new Date());
+    gedxOutputStream.addResource(ConclusionModel.GEDCOMX_CONCLUSION_V1_XML_MEDIA_TYPE, "junk", new Date(), null);
   }
 }
