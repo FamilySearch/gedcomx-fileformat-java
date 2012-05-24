@@ -70,6 +70,8 @@ public class GedcomxFileWriteReadTest {
 
       GedcomxOutputStream gedxOutputStream = new GedcomxOutputStream(new FileOutputStream(tempFile));
       final String GX_ROOT = "GX-Root";
+      final String DC_MODIFIED = "DC-modified";
+      final Date modifiedDate = new Date();
       final String CREATED_BY = "Created-By";
       final String createdByValue = "FamilySearch Platform API 0.1";
       final String gxRootRef = "persons/98765";
@@ -82,6 +84,7 @@ public class GedcomxFileWriteReadTest {
             if (entryName.equals(gxRootRef)) {
               Map<String, String> additionalAttribs = new HashMap<String, String>(1);
               additionalAttribs.put(GX_ROOT, Boolean.TRUE.toString());
+              additionalAttribs.put(DC_MODIFIED, GedcomxTimeStampUtil.formatAsXmlUTC(modifiedDate));
               gedxOutputStream.addResource(ConclusionModel.GEDCOMX_CONCLUSION_V1_XML_MEDIA_TYPE
                 , entryName
                 , person
@@ -145,6 +148,7 @@ public class GedcomxFileWriteReadTest {
               assertTrue(entryAttributes.containsKey(Attributes.Name.CONTENT_TYPE.toString()));
               if (name.equals(gxRootRef)) {
                 assertTrue(Boolean.parseBoolean(entryAttributes.get(GX_ROOT)));
+                assertEquals(entryAttributes.get(DC_MODIFIED), GedcomxTimeStampUtil.formatAsXmlUTC(modifiedDate));
               }
 
               Object resource = gedxFile.readResource(gedxEntry);
