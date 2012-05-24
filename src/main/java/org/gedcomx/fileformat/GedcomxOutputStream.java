@@ -19,6 +19,8 @@ import org.gedcomx.rt.GedcomNamespaceManager;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.*;
@@ -29,7 +31,6 @@ import java.util.jar.*;
  * Class to help in writing a GEDCOM X file.
  */
 public class GedcomxOutputStream {
-
   private final Marshaller jaxbMarshaller;
   private final JarOutputStream gedxOutputStream;
   private final Manifest mf;
@@ -109,8 +110,7 @@ public class GedcomxOutputStream {
     this.mf.getEntries().put(entryName, new Attributes());
 
     if (lastModified != null) {
-      String formattedLastModified = lastModified.toString(); // TODO: need to format this appropriately
-      this.mf.getAttributes(entryName).putValue("Last-Modified", formattedLastModified);
+      this.mf.getAttributes(entryName).putValue("DC-modified", GedcomxTimeStampUtil.formatAsXmlUTC(lastModified));
     }
 
     this.mf.getAttributes(entryName).put(Attributes.Name.CONTENT_TYPE, contentType);
