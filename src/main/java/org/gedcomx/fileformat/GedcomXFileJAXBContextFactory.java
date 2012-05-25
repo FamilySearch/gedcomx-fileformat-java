@@ -18,6 +18,7 @@ package org.gedcomx.fileformat;
 import org.gedcomx.conclusion.Person;
 import org.gedcomx.conclusion.Relationship;
 import org.gedcomx.metadata.dc.ObjectFactory;
+import org.gedcomx.metadata.foaf.Organization;
 import org.gedcomx.metadata.rdf.Description;
 
 import javax.xml.bind.JAXBContext;
@@ -40,6 +41,7 @@ public class GedcomXFileJAXBContextFactory {
    *   org.gedcomx.conclusion.Relationship
    *   org.gedcomx.metadata.dc.ObjectFactory
    *   org.gedcomx.metadata.foaf.Person
+   *   org.gedcomx.metadata.foaf.Organization
    *   org.gedcomx.metadata.rdf.Description
    * Any additional classes needed can be passed to this call to supplement (not override) these defaults
    *
@@ -54,6 +56,7 @@ public class GedcomXFileJAXBContextFactory {
       , org.gedcomx.metadata.foaf.Person.class
       , Relationship.class
       , Description.class
+      , Organization.class
       , ObjectFactory.class));
     contextClasses.addAll(Arrays.asList(classes));
     return JAXBContext.newInstance((Class<?>[]) contextClasses.toArray(new Class<?>[contextClasses.size()]));
