@@ -2,8 +2,8 @@ Introduction
 ------------
 
 Welcome to the GEDCOM X File Format library for Java. This library is used to read and write GEDCOM X File Format as defined
-by the [GEDCOM X File Format Specification](http://www.gedcomx.org/File-Format.html). It relies on the artifacts produced by
-the [GEDCOM X project](https://github.com/FamilySearch/gedcomx).
+by the [GEDCOM X File Format Specification](https://github.com/FamilySearch/gedcomx/blob/master/specifications/file-format-specification.md).
+It relies on the artifacts produced by the [GEDCOM X project](https://github.com/FamilySearch/gedcomx).
 
 Here's how you read a file:
 
