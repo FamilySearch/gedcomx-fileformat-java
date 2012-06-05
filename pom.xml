@@ -20,6 +20,12 @@
     </repository>
   </repositories>
 
+  <scm>
+    <connection>scm:git:git@github.com:FamilySearch/gedcomx-fileformat-java.git</connection>
+    <developerConnection>scm:git:git@github.com:FamilySearch/gedcomx-fileformat-java.git</developerConnection>
+    <url>https://github.com/FamilySearch/gedcomx-fileformat-java</url>
+  </scm>
+
   <dependencies>
     <dependency>
       <groupId>com.sun.jersey</groupId>
