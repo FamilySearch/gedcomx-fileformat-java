@@ -70,7 +70,7 @@ public class GedcomxFileWriteReadTest {
 
       GedcomxOutputStream gedxOutputStream = new GedcomxOutputStream(new FileOutputStream(tempFile));
       final String GX_ROOT = "GX-Root";
-      final String DC_MODIFIED = "DC-modified";
+      final String DC_MODIFIED = "X-DC-modified";
       final Date modifiedDate = new Date();
       final String CREATED_BY = "Created-By";
       final String createdByValue = "FamilySearch Platform API 0.1";

@@ -110,7 +110,7 @@ public class GedcomxOutputStream {
     this.mf.getEntries().put(entryName, new Attributes());
 
     if (lastModified != null) {
-      this.mf.getAttributes(entryName).putValue("DC-modified", GedcomxTimeStampUtil.formatAsXmlUTC(lastModified));
+      this.mf.getAttributes(entryName).putValue("X-DC-modified", GedcomxTimeStampUtil.formatAsXmlUTC(lastModified));
     }
 
     this.mf.getAttributes(entryName).put(Attributes.Name.CONTENT_TYPE, contentType);
