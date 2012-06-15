@@ -15,11 +15,12 @@
  */
 package org.gedcomx.fileformat;
 
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -31,7 +32,12 @@ import java.util.jar.JarFile;
 public class GedcomxFile {
 
   private final JarFile gedxFile;
-  private final Unmarshaller jaxbUnmarshaller;
+  private final GedcomxEntryDeserializer deserializer;
+
+  public GedcomxFile(JarFile gedxFile, GedcomxEntryDeserializer deserializer) {
+    this.gedxFile = gedxFile;
+    this.deserializer = deserializer;
+  }
 
   /**
    * Creates a new <code>GedcomxFile</code> to read from the specified file <code>JarFile</code>.
@@ -40,13 +46,7 @@ public class GedcomxFile {
    * @throws IOException if an I/O error has occurred
    */
   public GedcomxFile(JarFile jarFile, Class<?>... classes) throws IOException {
-    this.gedxFile = jarFile;
-    try {
-      this.jaxbUnmarshaller = GedcomXFileJAXBContextFactory.newInstance(classes).createUnmarshaller();
-    }
-    catch (JAXBException ex) {
-      throw new IOException(ex);
-    }
+    this(jarFile, new DefaultXMLSerialization(classes));
   }
 
   /**
@@ -81,15 +81,29 @@ public class GedcomxFile {
    *
    * @return The GEDCOM X file entries.
    */
-  public Collection<GedcomxFileEntry> getEntries() {
-    List<GedcomxFileEntry> gedcomxFileEntries = new ArrayList<GedcomxFileEntry>();
+  public Iterable<GedcomxFileEntry> getEntries() {
+    final Enumeration<JarEntry> jarEntries = this.gedxFile.entries();
+    return new Iterable<GedcomxFileEntry>() {
+      @Override
+      public Iterator<GedcomxFileEntry> iterator() {
+        return new Iterator<GedcomxFileEntry>() {
+          @Override
+          public boolean hasNext() {
+            return jarEntries.hasMoreElements();
+          }
 
-    for (Enumeration<JarEntry> jarEntries = this.gedxFile.entries(); jarEntries.hasMoreElements(); ) {
-      JarEntry jarEntry = jarEntries.nextElement();
-      gedcomxFileEntries.add(new GedcomxFileEntry(jarEntry));
-    }
+          @Override
+          public GedcomxFileEntry next() {
+            return new GedcomxFileEntry(jarEntries.nextElement());
+          }
 
-    return gedcomxFileEntries;
+          @Override
+          public void remove() {
+            throw new UnsupportedOperationException();
+          }
+        };
+      }
+    };
   }
 
   /**
@@ -111,16 +125,7 @@ public class GedcomxFile {
    * @throws IOException If there was a problem unmarshalling the resource.
    */
   public Object readResource(GedcomxFileEntry gedxEntry) throws IOException {
-    Object resource;
-
-    try {
-      resource = jaxbUnmarshaller.unmarshal(getResourceStream(gedxEntry));
-    }
-    catch (JAXBException ex) {
-      throw new IOException(ex);
-    }
-
-    return resource;
+    return this.deserializer.deserialize(getResourceStream(gedxEntry));
   }
 
 

@@ -20,9 +20,15 @@ import org.gedcomx.conclusion.Relationship;
 import org.gedcomx.metadata.dc.ObjectFactory;
 import org.gedcomx.metadata.foaf.Organization;
 import org.gedcomx.metadata.rdf.Description;
+import org.gedcomx.rt.GedcomNamespaceManager;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -31,7 +37,49 @@ import java.util.Set;
 /**
  * A class for creating instances of <code>JAXBContext</code> appropriate for reading and writing GEDCOM X files.
  */
-public class GedcomXFileJAXBContextFactory {
+public class DefaultXMLSerialization implements GedcomxEntrySerializer, GedcomxEntryDeserializer {
+
+  private final Unmarshaller unmarshaller;
+  private final Marshaller marshaller;
+
+  public DefaultXMLSerialization(Class<?>... classes) {
+    this(true, classes);
+  }
+
+  public DefaultXMLSerialization(boolean pretty, Class<?>... classes) {
+    try {
+      JAXBContext context = newContext(classes);
+      this.unmarshaller = context.createUnmarshaller();
+      this.marshaller = context.createMarshaller();
+      this.marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", new GedcomNamespaceManager(Person.class));
+      if (pretty) {
+        this.marshaller.setProperty("jaxb.formatted.output", Boolean.TRUE);
+      }
+    }
+    catch (JAXBException e) {
+      throw new IllegalArgumentException(e);
+    }
+  }
+
+  @Override
+  public Object deserialize(InputStream in) throws IOException {
+    try {
+      return this.unmarshaller.unmarshal(in);
+    }
+    catch (JAXBException e) {
+      throw new IOException(e);
+    }
+  }
+
+  @Override
+  public void serialize(Object resource, OutputStream out) throws IOException {
+    try {
+      this.marshaller.marshal(resource, out);
+    }
+    catch (JAXBException e) {
+      throw new IOException(e);
+    }
+  }
 
   /**
    * Factory method for creating a new instance of a <code>JAXBContext</code> appropriate for reading and/or writing a GEDCOM X file.
@@ -50,7 +98,7 @@ public class GedcomXFileJAXBContextFactory {
    *
    * @throws JAXBException
    */
-  public static JAXBContext newInstance(Class<?>... classes) throws JAXBException {
+  private static JAXBContext newContext(Class<?>... classes) throws JAXBException {
     Set<Class<?>> contextClasses = new HashSet<Class<?>>(Arrays.asList(
         Person.class
       , org.gedcomx.metadata.foaf.Person.class
@@ -62,5 +110,4 @@ public class GedcomXFileJAXBContextFactory {
     return JAXBContext.newInstance((Class<?>[]) contextClasses.toArray(new Class<?>[contextClasses.size()]));
   }
 
-  private GedcomXFileJAXBContextFactory() {} // utility class; not intended to be instantiated; formated to reduce effect on code coverage analysis; addresses SONAR issue
 }

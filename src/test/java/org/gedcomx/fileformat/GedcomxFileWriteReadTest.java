@@ -242,7 +242,7 @@ public class GedcomxFileWriteReadTest {
         try {
           new GedcomxFile(jarFile, MyTestClass2.class);
           fail("Expected IOException");
-        } catch (IOException ex) {
+        } catch (IllegalArgumentException ex) {
           assertTrue(ex.getCause() instanceof JAXBException);
         }
 
@@ -282,7 +282,7 @@ public class GedcomxFileWriteReadTest {
     new GedcomxFileEntry(null);
   }
 
-  @Test(expectedExceptions = IOException.class)
+  @Test(expectedExceptions = IllegalArgumentException.class)
   public void testGedcomxOutputStreamJAXBException() throws IOException{
     new GedcomxOutputStream(new ByteArrayOutputStream(), MyTestClass2.class);
   }

@@ -15,15 +15,10 @@
  */
 package org.gedcomx.fileformat;
 
-import org.gedcomx.rt.GedcomNamespaceManager;
-
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.*;
+import java.util.Date;
+import java.util.Map;
 import java.util.jar.*;
 
 
@@ -31,36 +26,33 @@ import java.util.jar.*;
  * Class to help in writing a GEDCOM X file.
  */
 public class GedcomxOutputStream {
-  private final Marshaller jaxbMarshaller;
+
+  private final GedcomxEntrySerializer serializer;
   private final JarOutputStream gedxOutputStream;
   private final Manifest mf;
 
-  /**
-   * Constructs a GEDCOM X output stream.
-   *
-   * NOTE: This class uses the GedcomXFileJAXBContextFactory to create a JAXB context from which to derive the marshaller that is used to marshal resources into the output stream.
-   * GedcomXFileJAXBContextFactory creates a context that includes some default resource classes.  The classes passed via this constructor will supplement these defaults; they will
-   * not overwrite or replace these defaults.  Please see the documentation for GedcomXFileJAXBContextFactory to review the list of default classes.
-   *
-   * @param gedxOutputStream an output stream to which the GEDCOM X resources will appended
-   * @param classes classes representing resources that will be marshaled (via JAXB) into the GEDCOM X output stream
-   *
-   * @throws IOException
-   */
-  public GedcomxOutputStream(OutputStream gedxOutputStream, Class<?>... classes) throws IOException {
-    try {
-      this.jaxbMarshaller = GedcomXFileJAXBContextFactory.newInstance(classes).createMarshaller();
-      this.jaxbMarshaller.setProperty("jaxb.formatted.output", Boolean.TRUE);
-      this.jaxbMarshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", new GedcomNamespaceManager());
-    }
-    catch (JAXBException ex) {
-      throw new IOException(ex);
-    }
-
+  public GedcomxOutputStream(OutputStream gedxOutputStream, GedcomxEntrySerializer serializer) throws IOException {
+    this.serializer = serializer;
     this.gedxOutputStream = new JarOutputStream(gedxOutputStream);
-
     this.mf = new Manifest();
     this.mf.getMainAttributes().put(Attributes.Name.MANIFEST_VERSION, "1.0");
+
+  }
+
+    /**
+    * Constructs a GEDCOM X output stream.
+    *
+    * NOTE: This class uses the GedcomXFileJAXBContextFactory to create a JAXB context from which to derive the marshaller that is used to marshal resources into the output stream.
+    * GedcomXFileJAXBContextFactory creates a context that includes some default resource classes.  The classes passed via this constructor will supplement these defaults; they will
+    * not overwrite or replace these defaults.  Please see the documentation for GedcomXFileJAXBContextFactory to review the list of default classes.
+    *
+    * @param gedxOutputStream an output stream to which the GEDCOM X resources will appended
+    * @param classes classes representing resources that will be marshaled (via JAXB) into the GEDCOM X output stream
+    *
+    * @throws IOException
+    */
+  public GedcomxOutputStream(OutputStream gedxOutputStream, Class<?>... classes) throws IOException {
+    this(gedxOutputStream, new DefaultXMLSerialization(classes));
   }
 
   /**
@@ -121,13 +113,7 @@ public class GedcomxOutputStream {
     }
 
     this.gedxOutputStream.putNextEntry(gedxEntry);
-
-    try {
-      jaxbMarshaller.marshal(resource, this.gedxOutputStream);
-    }
-    catch (JAXBException ex) {
-      throw new IOException(ex);
-    }
+    this.serializer.serialize(resource, this.gedxOutputStream);
   }
 
   /**
