@@ -99,21 +99,32 @@ public class GedcomxOutputStream {
     entryName = entryName.charAt(0) == '/' ? entryName.substring(1) : entryName;
 
     JarEntry gedxEntry = new JarEntry(entryName); // will throw a runtime exception if entryName is not okay
-    this.mf.getEntries().put(entryName, new Attributes());
+    Attributes entryAttrs = new Attributes();
 
     if (lastModified != null) {
-      this.mf.getAttributes(entryName).putValue("X-DC-modified", GedcomxTimeStampUtil.formatAsXmlUTC(lastModified));
+      entryAttrs.putValue("X-DC-modified", GedcomxTimeStampUtil.formatAsXmlUTC(lastModified));
     }
 
-    this.mf.getAttributes(entryName).put(Attributes.Name.CONTENT_TYPE, contentType);
+    if (!isKnownContentType(contentType)) {
+      entryAttrs.put(Attributes.Name.CONTENT_TYPE, contentType);
+    }
+
     if (attributes != null) {
       for (Map.Entry<String, String> entry : attributes.entrySet()) {
-        this.mf.getAttributes(entryName).putValue(entry.getKey(), entry.getValue());
+        entryAttrs.putValue(entry.getKey(), entry.getValue());
       }
+    }
+
+    if (!entryAttrs.isEmpty()) {
+      this.mf.getEntries().put(entryName, entryAttrs);
     }
 
     this.gedxOutputStream.putNextEntry(gedxEntry);
     this.serializer.serialize(resource, this.gedxOutputStream);
+  }
+
+  private boolean isKnownContentType(String contentType) {
+    return this.serializer.isKnownContentType(contentType);
   }
 
   /**

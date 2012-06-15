@@ -15,11 +15,14 @@
  */
 package org.gedcomx.fileformat;
 
+import org.gedcomx.conclusion.ConclusionModel;
 import org.gedcomx.conclusion.Person;
 import org.gedcomx.conclusion.Relationship;
 import org.gedcomx.metadata.dc.ObjectFactory;
+import org.gedcomx.metadata.foaf.FoafModel;
 import org.gedcomx.metadata.foaf.Organization;
 import org.gedcomx.metadata.rdf.Description;
+import org.gedcomx.rt.CommonModels;
 import org.gedcomx.rt.GedcomNamespaceManager;
 
 import javax.xml.bind.JAXBContext;
@@ -41,6 +44,7 @@ public class DefaultXMLSerialization implements GedcomxEntrySerializer, GedcomxE
 
   private final Unmarshaller unmarshaller;
   private final Marshaller marshaller;
+  private Set<String> knownContentTypes = new HashSet<String>(Arrays.asList(ConclusionModel.GEDCOMX_CONCLUSION_V1_XML_MEDIA_TYPE, CommonModels.GEDCOMX_COMMON_XML_MEDIA_TYPE, CommonModels.RDF_XML_MEDIA_TYPE));
 
   public DefaultXMLSerialization(Class<?>... classes) {
     this(true, classes);
@@ -79,6 +83,19 @@ public class DefaultXMLSerialization implements GedcomxEntrySerializer, GedcomxE
     catch (JAXBException e) {
       throw new IOException(e);
     }
+  }
+
+  @Override
+  public boolean isKnownContentType(String contentType) {
+    return this.knownContentTypes.contains(contentType);
+  }
+
+  public Set<String> getKnownContentTypes() {
+    return knownContentTypes;
+  }
+
+  public void setKnownContentTypes(Set<String> knownContentTypes) {
+    this.knownContentTypes = knownContentTypes;
   }
 
   /**

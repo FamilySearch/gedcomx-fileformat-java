@@ -27,10 +27,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 
@@ -68,7 +65,9 @@ public class GedcomxFileWriteReadTest {
     try {
       List<Object> resources = ExampleGedcomxFileData.create();
 
-      GedcomxOutputStream gedxOutputStream = new GedcomxOutputStream(new FileOutputStream(tempFile));
+      DefaultXMLSerialization ser = new DefaultXMLSerialization();
+      ser.setKnownContentTypes(new HashSet<String>());
+      GedcomxOutputStream gedxOutputStream = new GedcomxOutputStream(new FileOutputStream(tempFile), ser);
       final String GX_ROOT = "GX-Root";
       final String DC_MODIFIED = "X-DC-modified";
       final Date modifiedDate = new Date();
@@ -175,7 +174,9 @@ public class GedcomxFileWriteReadTest {
     try {
       MyTestClass myTestClass = new MyTestClass();
 
-      GedcomxOutputStream gedxOutputStream = new GedcomxOutputStream(new FileOutputStream(tempFile), MyTestClass.class);
+      DefaultXMLSerialization ser = new DefaultXMLSerialization(MyTestClass.class);
+      ser.setKnownContentTypes(new HashSet<String>());
+      GedcomxOutputStream gedxOutputStream = new GedcomxOutputStream(new FileOutputStream(tempFile), ser);
       try {
         gedxOutputStream.addResource(ConclusionModel.GEDCOMX_CONCLUSION_V1_XML_MEDIA_TYPE
           , "myTestClass"
@@ -227,7 +228,9 @@ public class GedcomxFileWriteReadTest {
     try {
       MyTestClass myTestClass = new MyTestClass();
 
-      GedcomxOutputStream gedxOutputStream = new GedcomxOutputStream(new FileOutputStream(tempFile), MyTestClass.class);
+      DefaultXMLSerialization ser = new DefaultXMLSerialization(MyTestClass.class);
+      ser.setKnownContentTypes(new HashSet<String>());
+      GedcomxOutputStream gedxOutputStream = new GedcomxOutputStream(new FileOutputStream(tempFile), ser);
       try {
         gedxOutputStream.addResource(ConclusionModel.GEDCOMX_CONCLUSION_V1_XML_MEDIA_TYPE
           , "myTestClass"

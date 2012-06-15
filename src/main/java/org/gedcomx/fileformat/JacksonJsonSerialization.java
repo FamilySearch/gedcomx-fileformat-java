@@ -19,11 +19,16 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.type.JavaType;
+import org.gedcomx.conclusion.ConclusionModel;
+import org.gedcomx.rt.CommonModels;
 import org.gedcomx.rt.GedcomJsonProvider;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 
 /**
@@ -32,6 +37,7 @@ import java.io.OutputStream;
 public class JacksonJsonSerialization implements GedcomxEntrySerializer, GedcomxEntryDeserializer {
 
   private final ObjectMapper mapper;
+  private Set<String> knownContentTypes = new HashSet<String>(Arrays.asList(ConclusionModel.GEDCOMX_CONCLUSION_V1_JSON_MEDIA_TYPE, CommonModels.GEDCOMX_COMMON_JSON_MEDIA_TYPE, CommonModels.RDF_JSON_MEDIA_TYPE));
 
   public JacksonJsonSerialization(Class<?>... classes) {
     this(true, classes);
@@ -58,6 +64,19 @@ public class JacksonJsonSerialization implements GedcomxEntrySerializer, Gedcomx
   @Override
   public void serialize(Object resource, OutputStream out) throws IOException {
     this.mapper.writeValue(out, resource);
+  }
+
+  @Override
+  public boolean isKnownContentType(String contentType) {
+    return this.knownContentTypes.contains(contentType);
+  }
+
+  public Set<String> getKnownContentTypes() {
+    return knownContentTypes;
+  }
+
+  public void setKnownContentTypes(Set<String> knownContentTypes) {
+    this.knownContentTypes = knownContentTypes;
   }
 
 }
