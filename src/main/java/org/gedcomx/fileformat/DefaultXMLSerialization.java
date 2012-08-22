@@ -18,10 +18,8 @@ package org.gedcomx.fileformat;
 import org.gedcomx.conclusion.ConclusionModel;
 import org.gedcomx.conclusion.Person;
 import org.gedcomx.conclusion.Relationship;
-import org.gedcomx.metadata.dc.ObjectFactory;
-import org.gedcomx.metadata.foaf.FoafModel;
 import org.gedcomx.metadata.foaf.Organization;
-import org.gedcomx.metadata.rdf.Description;
+import org.gedcomx.metadata.source.SourceDescription;
 import org.gedcomx.rt.CommonModels;
 import org.gedcomx.rt.GedcomNamespaceManager;
 
@@ -120,9 +118,8 @@ public class DefaultXMLSerialization implements GedcomxEntrySerializer, GedcomxE
         Person.class
       , org.gedcomx.metadata.foaf.Person.class
       , Relationship.class
-      , Description.class
-      , Organization.class
-      , ObjectFactory.class));
+      , SourceDescription.class
+      , Organization.class));
     contextClasses.addAll(Arrays.asList(classes));
     return JAXBContext.newInstance((Class<?>[]) contextClasses.toArray(new Class<?>[contextClasses.size()]));
   }

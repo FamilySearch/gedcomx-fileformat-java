@@ -18,7 +18,7 @@ package org.gedcomx.fileformat;
 import org.gedcomx.conclusion.ConclusionModel;
 import org.gedcomx.conclusion.Person;
 import org.gedcomx.conclusion.Relationship;
-import org.gedcomx.metadata.rdf.Description;
+import org.gedcomx.metadata.source.SourceDescription;
 import org.testng.annotations.Test;
 
 import javax.xml.bind.JAXBException;
@@ -107,8 +107,8 @@ public class GedcomxFileWriteReadTest {
               , "contributors/" + person.getId()
               , person
               , null);
-          } else if (resource instanceof Description) {
-            Description description = (Description)resource;
+          } else if (resource instanceof SourceDescription) {
+            SourceDescription description = (SourceDescription)resource;
             gedxOutputStream.addResource(ConclusionModel.GEDCOMX_CONCLUSION_V1_XML_MEDIA_TYPE
               , "descriptions/" + description.getId()
               , description
