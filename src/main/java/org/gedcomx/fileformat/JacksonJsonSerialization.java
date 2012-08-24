@@ -21,7 +21,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.type.JavaType;
-import org.gedcomx.conclusion.ConclusionModel;
+import org.gedcomx.rt.CommonModels;
 import org.gedcomx.rt.CommonModels;
 import org.gedcomx.rt.json.GedcomJsonProvider;
 
@@ -40,7 +40,7 @@ public class JacksonJsonSerialization implements GedcomxEntrySerializer, Gedcomx
 
   private final ObjectMapper mapper;
   private final JsonFactory factory;
-  private Set<String> knownContentTypes = new HashSet<String>(Arrays.asList(ConclusionModel.GEDCOMX_CONCLUSION_V1_JSON_MEDIA_TYPE, CommonModels.GEDCOMX_COMMON_JSON_MEDIA_TYPE, CommonModels.RDF_JSON_MEDIA_TYPE));
+  private Set<String> knownContentTypes = new HashSet<String>(Arrays.asList(CommonModels.GEDCOMX_JSON_MEDIA_TYPE));
 
   public JacksonJsonSerialization(Class<?>... classes) {
     this(true, classes);

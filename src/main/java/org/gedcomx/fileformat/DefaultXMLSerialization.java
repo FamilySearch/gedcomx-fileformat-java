@@ -15,11 +15,11 @@
  */
 package org.gedcomx.fileformat;
 
-import org.gedcomx.conclusion.ConclusionModel;
+import org.gedcomx.rt.CommonModels;
 import org.gedcomx.conclusion.Person;
 import org.gedcomx.conclusion.Relationship;
-import org.gedcomx.metadata.foaf.Organization;
-import org.gedcomx.metadata.source.SourceDescription;
+import org.gedcomx.contributor.Agent;
+import org.gedcomx.source.SourceDescription;
 import org.gedcomx.rt.CommonModels;
 import org.gedcomx.rt.GedcomNamespaceManager;
 
@@ -42,7 +42,7 @@ public class DefaultXMLSerialization implements GedcomxEntrySerializer, GedcomxE
 
   private final Unmarshaller unmarshaller;
   private final Marshaller marshaller;
-  private Set<String> knownContentTypes = new HashSet<String>(Arrays.asList(ConclusionModel.GEDCOMX_CONCLUSION_V1_XML_MEDIA_TYPE, CommonModels.GEDCOMX_COMMON_XML_MEDIA_TYPE, CommonModels.RDF_XML_MEDIA_TYPE));
+  private Set<String> knownContentTypes = new HashSet<String>(Arrays.asList(CommonModels.GEDCOMX_XML_MEDIA_TYPE));
 
   public DefaultXMLSerialization(Class<?>... classes) {
     this(true, classes);
@@ -104,7 +104,7 @@ public class DefaultXMLSerialization implements GedcomxEntrySerializer, GedcomxE
    *   org.gedcomx.conclusion.Relationship
    *   org.gedcomx.metadata.dc.ObjectFactory
    *   org.gedcomx.metadata.foaf.Person
-   *   org.gedcomx.metadata.foaf.Organization
+   *   org.gedcomx.contributor.Agent
    *   org.gedcomx.metadata.rdf.Description
    * Any additional classes needed can be passed to this call to supplement (not override) these defaults
    *
@@ -116,10 +116,9 @@ public class DefaultXMLSerialization implements GedcomxEntrySerializer, GedcomxE
   private static JAXBContext newContext(Class<?>... classes) throws JAXBException {
     Set<Class<?>> contextClasses = new HashSet<Class<?>>(Arrays.asList(
         Person.class
-      , org.gedcomx.metadata.foaf.Person.class
+      , Agent.class
       , Relationship.class
-      , SourceDescription.class
-      , Organization.class));
+      , SourceDescription.class));
     contextClasses.addAll(Arrays.asList(classes));
     return JAXBContext.newInstance((Class<?>[]) contextClasses.toArray(new Class<?>[contextClasses.size()]));
   }

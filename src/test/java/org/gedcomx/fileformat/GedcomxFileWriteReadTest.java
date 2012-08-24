@@ -15,10 +15,11 @@
  */
 package org.gedcomx.fileformat;
 
-import org.gedcomx.conclusion.ConclusionModel;
+import org.gedcomx.contributor.Agent;
+import org.gedcomx.rt.CommonModels;
 import org.gedcomx.conclusion.Person;
 import org.gedcomx.conclusion.Relationship;
-import org.gedcomx.metadata.source.SourceDescription;
+import org.gedcomx.source.SourceDescription;
 import org.testng.annotations.Test;
 
 import javax.xml.bind.JAXBException;
@@ -84,32 +85,32 @@ public class GedcomxFileWriteReadTest {
               Map<String, String> additionalAttribs = new HashMap<String, String>(1);
               additionalAttribs.put(GX_ROOT, Boolean.TRUE.toString());
               additionalAttribs.put(DC_MODIFIED, GedcomxTimeStampUtil.formatAsXmlUTC(modifiedDate));
-              gedxOutputStream.addResource(ConclusionModel.GEDCOMX_CONCLUSION_V1_XML_MEDIA_TYPE
+              gedxOutputStream.addResource(CommonModels.GEDCOMX_XML_MEDIA_TYPE
                 , entryName
                 , person
                 , null
                 , additionalAttribs);
             } else {
-              gedxOutputStream.addResource(ConclusionModel.GEDCOMX_CONCLUSION_V1_XML_MEDIA_TYPE
+              gedxOutputStream.addResource(CommonModels.GEDCOMX_XML_MEDIA_TYPE
                 , entryName
                 , person
                 , null);
             }
           } else if (resource instanceof Relationship) {
             Relationship relationship = (Relationship)resource;
-            gedxOutputStream.addResource(ConclusionModel.GEDCOMX_CONCLUSION_V1_XML_MEDIA_TYPE
+            gedxOutputStream.addResource(CommonModels.GEDCOMX_XML_MEDIA_TYPE
               , "\\relationships\\" + relationship.getId()
               , relationship
               , null);
-          } else if (resource instanceof org.gedcomx.metadata.foaf.Person) {
-            org.gedcomx.metadata.foaf.Person person = (org.gedcomx.metadata.foaf.Person)resource;
-            gedxOutputStream.addResource(ConclusionModel.GEDCOMX_CONCLUSION_V1_XML_MEDIA_TYPE
+          } else if (resource instanceof Agent) {
+            Agent person = (Agent) resource;
+            gedxOutputStream.addResource(CommonModels.GEDCOMX_XML_MEDIA_TYPE
               , "contributors/" + person.getId()
               , person
               , null);
           } else if (resource instanceof SourceDescription) {
             SourceDescription description = (SourceDescription)resource;
-            gedxOutputStream.addResource(ConclusionModel.GEDCOMX_CONCLUSION_V1_XML_MEDIA_TYPE
+            gedxOutputStream.addResource(CommonModels.GEDCOMX_XML_MEDIA_TYPE
               , "descriptions/" + description.getId()
               , description
               , null);
@@ -138,7 +139,7 @@ public class GedcomxFileWriteReadTest {
           for (GedcomxFileEntry gedxEntry : gedxFile.getEntries()) {
             String name = gedxEntry.getJarEntry().getName();
             if ((name != null) && (!"META-INF/MANIFEST.MF".equals(name))) {
-              assertEquals(gedxEntry.getContentType(), ConclusionModel.GEDCOMX_CONCLUSION_V1_XML_MEDIA_TYPE);
+              assertEquals(gedxEntry.getContentType(), CommonModels.GEDCOMX_XML_MEDIA_TYPE);
               Map<String,String> entryAttributes = gedxEntry.getAttributes();
               for (Map.Entry<String, String> entry : entryAttributes.entrySet()) {
                 String value = gedxEntry.getAttribute(entry.getKey());
@@ -178,7 +179,7 @@ public class GedcomxFileWriteReadTest {
       ser.setKnownContentTypes(new HashSet<String>());
       GedcomxOutputStream gedxOutputStream = new GedcomxOutputStream(new FileOutputStream(tempFile), ser);
       try {
-        gedxOutputStream.addResource(ConclusionModel.GEDCOMX_CONCLUSION_V1_XML_MEDIA_TYPE
+        gedxOutputStream.addResource(CommonModels.GEDCOMX_XML_MEDIA_TYPE
           , "myTestClass"
           , myTestClass
           , null);
@@ -195,7 +196,7 @@ public class GedcomxFileWriteReadTest {
           for (GedcomxFileEntry gedxEntry : gedxFile.getEntries()) {
             String name = gedxEntry.getJarEntry().getName();
             if ((name != null) && (!"META-INF/MANIFEST.MF".equals(name))) {
-              assertEquals(gedxEntry.getContentType(), ConclusionModel.GEDCOMX_CONCLUSION_V1_XML_MEDIA_TYPE);
+              assertEquals(gedxEntry.getContentType(), CommonModels.GEDCOMX_XML_MEDIA_TYPE);
               Map<String,String> entryAttributes = gedxEntry.getAttributes();
               for (Map.Entry<String, String> entry : entryAttributes.entrySet()) {
                 String value = gedxEntry.getAttribute(entry.getKey());
@@ -232,7 +233,7 @@ public class GedcomxFileWriteReadTest {
       ser.setKnownContentTypes(new HashSet<String>());
       GedcomxOutputStream gedxOutputStream = new GedcomxOutputStream(new FileOutputStream(tempFile), ser);
       try {
-        gedxOutputStream.addResource(ConclusionModel.GEDCOMX_CONCLUSION_V1_XML_MEDIA_TYPE
+        gedxOutputStream.addResource(CommonModels.GEDCOMX_XML_MEDIA_TYPE
           , "myTestClass"
           , myTestClass
           , null);
@@ -256,7 +257,7 @@ public class GedcomxFileWriteReadTest {
           for (GedcomxFileEntry gedxEntry : gedxFile.getEntries()) {
             String name = gedxEntry.getJarEntry().getName();
             if ((name != null) && (!"META-INF/MANIFEST.MF".equals(name))) {
-              assertEquals(gedxEntry.getContentType(), ConclusionModel.GEDCOMX_CONCLUSION_V1_XML_MEDIA_TYPE);
+              assertEquals(gedxEntry.getContentType(), CommonModels.GEDCOMX_XML_MEDIA_TYPE);
 
               try {
                 gedxFile.readResource(gedxEntry);
@@ -305,18 +306,18 @@ public class GedcomxFileWriteReadTest {
   @Test(expectedExceptions = NullPointerException.class)
   public void testGedcomxOutputStreamAddResourceNullPointerException2() throws IOException {
     GedcomxOutputStream gedxOutputStream = new GedcomxOutputStream(new ByteArrayOutputStream());
-    gedxOutputStream.addResource(ConclusionModel.GEDCOMX_CONCLUSION_V1_XML_MEDIA_TYPE, null, null, null);
+    gedxOutputStream.addResource(CommonModels.GEDCOMX_XML_MEDIA_TYPE, null, null, null);
   }
 
   @Test(expectedExceptions = IllegalArgumentException.class)
   public void testGedcomxOutputStreamAddResourceIllegalArgumentException2() throws IOException {
     GedcomxOutputStream gedxOutputStream = new GedcomxOutputStream(new ByteArrayOutputStream());
-    gedxOutputStream.addResource(ConclusionModel.GEDCOMX_CONCLUSION_V1_XML_MEDIA_TYPE, "junk", null, null);
+    gedxOutputStream.addResource(CommonModels.GEDCOMX_XML_MEDIA_TYPE, "junk", null, null);
   }
 
   @Test(expectedExceptions = IOException.class)
   public void testGedcomxOutputStreamAddResourceIllegalArgumentException3() throws IOException {
     GedcomxOutputStream gedxOutputStream = new GedcomxOutputStream(new ByteArrayOutputStream());
-    gedxOutputStream.addResource(ConclusionModel.GEDCOMX_CONCLUSION_V1_XML_MEDIA_TYPE, "junk", new Date(), null);
+    gedxOutputStream.addResource(CommonModels.GEDCOMX_XML_MEDIA_TYPE, "junk", new Date(), null);
   }
 }

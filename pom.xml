@@ -33,12 +33,7 @@
     </dependency>
     <dependency>
       <groupId>org.gedcomx</groupId>
-      <artifactId>gedcomx-conclusion</artifactId>
-      <version>${gedcomx.model.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.gedcomx</groupId>
-      <artifactId>gedcomx-metadata</artifactId>
+      <artifactId>gedcomx-model</artifactId>
       <version>${gedcomx.model.version}</version>
     </dependency>
 
