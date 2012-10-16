@@ -20,7 +20,6 @@ import org.gedcomx.conclusion.Person;
 import org.gedcomx.conclusion.Relationship;
 import org.gedcomx.contributor.Agent;
 import org.gedcomx.source.SourceDescription;
-import org.gedcomx.rt.CommonModels;
 import org.gedcomx.rt.GedcomNamespaceManager;
 
 import javax.xml.bind.JAXBContext;

@@ -35,9 +35,10 @@ public class ExampleGedcomxFileData {
     // primary
 
     Name name = new Name();
-    name.setKnownType(NameType.Name);
-    name.setPrimaryForm(new NameForm());
-    name.getPrimaryForm().setFullText("Israel Heaton");
+    name.setKnownType(NameType.BirthName);
+    name.setNameForms(new ArrayList<NameForm>());
+    name.getNameForms().add(new NameForm());
+    name.getNameForms().get(0).setFullText("Israel Heaton");
 
     Gender gender = new Gender();
     gender.setKnownType(GenderType.Male);
@@ -76,8 +77,9 @@ public class ExampleGedcomxFileData {
     gender.setKnownType(GenderType.Male);
 
     name = new Name();
-    name.setPrimaryForm(new NameForm());
-    name.getPrimaryForm().setFullText("Jonathan Heaton");
+    name.setNameForms(new ArrayList<NameForm>());
+    name.getNameForms().add(new NameForm());
+    name.getNameForms().get(0).setFullText("Jonathan Heaton");
 
     Person searchedPerson1Father = new Person();
     searchedPerson1Father.setId("87654");
@@ -92,8 +94,9 @@ public class ExampleGedcomxFileData {
     gender.setKnownType(GenderType.Female);
 
     name = new Name();
-    name.setPrimaryForm(new NameForm());
-    name.getPrimaryForm().setFullText("Clarissa Hoyt");
+    name.setNameForms(new ArrayList<NameForm>());
+    name.getNameForms().add(new NameForm());
+    name.getNameForms().get(0).setFullText("Clarissa Hoyt");
 
     Person searchedPerson1Mother = new Person();
     searchedPerson1Mother.setId("76543");
@@ -108,8 +111,9 @@ public class ExampleGedcomxFileData {
     gender.setKnownType(GenderType.Female);
 
     name = new Name();
-    name.setPrimaryForm(new NameForm());
-    name.getPrimaryForm().setFullText("Charlotte Cox");
+    name.setNameForms(new ArrayList<NameForm>());
+    name.getNameForms().add(new NameForm());
+    name.getNameForms().get(0).setFullText("Charlotte Cox");
 
     Person searchedPerson1Spouse = new Person();
     searchedPerson1Spouse.setId("65432");
@@ -124,8 +128,9 @@ public class ExampleGedcomxFileData {
     gender.setKnownType(GenderType.Male);
 
     name = new Name();
-    name.setPrimaryForm(new NameForm());
-    name.getPrimaryForm().setFullText("Alma Heaton");
+    name.setNameForms(new ArrayList<NameForm>());
+    name.getNameForms().add(new NameForm());
+    name.getNameForms().get(0).setFullText("Alma Heaton");
 
     Person searchedPerson1Child = new Person();
     searchedPerson1Child.setId("54321");
