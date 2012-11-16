@@ -45,7 +45,7 @@ public class ExampleGedcomxFileData {
 
     org.gedcomx.conclusion.Date birthDate = new org.gedcomx.conclusion.Date();
     birthDate.setOriginal("30 January 1880");
-    Place birthPlace = new Place();
+    PlaceReference birthPlace = new PlaceReference();
     birthPlace.setOriginal("Orderville, UT");
     Fact factBirth = new Fact();
     factBirth.setKnownType(FactType.Birth);
@@ -54,7 +54,7 @@ public class ExampleGedcomxFileData {
 
     org.gedcomx.conclusion.Date deathDate = new org.gedcomx.conclusion.Date();
     deathDate.setOriginal("29 August 1936");
-    Place deathPlace = new Place();
+    PlaceReference deathPlace = new PlaceReference();
     deathPlace.setOriginal("Kanab, Kane, UT");
     Fact factDeath = new Fact();
     factDeath.setKnownType(FactType.Death);
