@@ -15,10 +15,10 @@
  */
 package org.gedcomx.fileformat;
 
-import org.gedcomx.rt.CommonModels;
 import org.gedcomx.conclusion.Person;
 import org.gedcomx.conclusion.Relationship;
 import org.gedcomx.contributor.Agent;
+import org.gedcomx.rt.GedcomxConstants;
 import org.gedcomx.source.SourceDescription;
 import org.gedcomx.rt.GedcomNamespaceManager;
 
@@ -41,7 +41,7 @@ public class DefaultXMLSerialization implements GedcomxEntrySerializer, GedcomxE
 
   private final Unmarshaller unmarshaller;
   private final Marshaller marshaller;
-  private Set<String> knownContentTypes = new HashSet<String>(Arrays.asList(CommonModels.GEDCOMX_XML_MEDIA_TYPE));
+  private Set<String> knownContentTypes = new HashSet<String>(Arrays.asList( GedcomxConstants.GEDCOMX_XML_MEDIA_TYPE));
 
   public DefaultXMLSerialization(Class<?>... classes) {
     this(true, classes);

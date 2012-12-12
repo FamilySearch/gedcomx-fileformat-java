@@ -8,7 +8,8 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <gedcomx.model.version>0.23.0-SNAPSHOT</gedcomx.model.version>
+    <gedcomx.model.version>0.25.0</gedcomx.model.version>
+    <gedcomx.rs.version>0.28.0</gedcomx.rs.version>
     <testng.version>6.5.2</testng.version>
   </properties>
 
@@ -35,6 +36,16 @@
       <groupId>org.gedcomx</groupId>
       <artifactId>gedcomx-model</artifactId>
       <version>${gedcomx.model.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.gedcomx</groupId>
+      <artifactId>gedcomx-rt-support</artifactId>
+      <version>${gedcomx.model.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.gedcomx</groupId>
+      <artifactId>gedcomx-rs-rt-support</artifactId>
+      <version>${gedcomx.rs.version}</version>
     </dependency>
 
     <!--test dependencies-->

@@ -21,8 +21,8 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.type.JavaType;
-import org.gedcomx.rt.CommonModels;
-import org.gedcomx.rt.CommonModels;
+import org.gedcomx.rt.GedcomxConstants;
+import org.gedcomx.rt.json.GedcomJacksonModule;
 import org.gedcomx.rt.json.GedcomJsonProvider;
 
 import java.io.IOException;
@@ -40,7 +40,7 @@ public class JacksonJsonSerialization implements GedcomxEntrySerializer, Gedcomx
 
   private final ObjectMapper mapper;
   private final JsonFactory factory;
-  private Set<String> knownContentTypes = new HashSet<String>(Arrays.asList(CommonModels.GEDCOMX_JSON_MEDIA_TYPE));
+  private Set<String> knownContentTypes = new HashSet<String>(Arrays.asList( GedcomxConstants.GEDCOMX_JSON_MEDIA_TYPE));
 
   public JacksonJsonSerialization(Class<?>... classes) {
     this(true, classes);
@@ -64,12 +64,7 @@ public class JacksonJsonSerialization implements GedcomxEntrySerializer, Gedcomx
   }
 
   public static ObjectMapper createObjectMapper(boolean pretty, Class<?>... classes) {
-    ObjectMapper mapper = GedcomJsonProvider.createObjectMapper(classes);
-    mapper.getSerializationConfig().setSerializationInclusion(JsonSerialize.Inclusion.NON_NULL);
-    if (pretty) {
-      mapper.getSerializationConfig().enable(SerializationConfig.Feature.INDENT_OUTPUT);
-    }
-    return mapper;
+    return GedcomJacksonModule.createObjectMapper(classes);
   }
 
   @Override
