@@ -15,11 +15,8 @@
  */
 package org.gedcomx.fileformat;
 
-import org.gedcomx.contributor.Agent;
-import org.gedcomx.conclusion.Person;
-import org.gedcomx.conclusion.Relationship;
+import org.gedcomx.Gedcomx;
 import org.gedcomx.rt.GedcomxConstants;
-import org.gedcomx.source.SourceDescription;
 import org.testng.annotations.Test;
 
 import javax.xml.bind.JAXBException;
@@ -28,13 +25,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.*;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
+import static org.testng.Assert.*;
 
 
 public class GedcomxFileWriteReadTest {
@@ -64,61 +61,20 @@ public class GedcomxFileWriteReadTest {
   public void testWriteRead() throws Exception {
     File tempFile = File.createTempFile("FsTestTmp", ".gedx");
     try {
-      List<Object> resources = ExampleGedcomxFileData.create();
+      Gedcomx bundle = ExampleGedcomxFileData.create();
 
       DefaultXMLSerialization ser = new DefaultXMLSerialization();
       ser.setKnownContentTypes(new HashSet<String>());
       GedcomxOutputStream gedxOutputStream = new GedcomxOutputStream(new FileOutputStream(tempFile), ser);
-      final String GX_ROOT = "GX-Root";
       final String DC_MODIFIED = "X-DC-modified";
       final Date modifiedDate = new Date();
       final String CREATED_BY = "Created-By";
       final String createdByValue = "FamilySearch Platform API 0.1";
-      final String gxRootRef = "persons/98765";
       try {
         gedxOutputStream.addAttribute(CREATED_BY, createdByValue);
-        for (Object resource : resources) {
-          if (resource instanceof Person) {
-            Person person = (Person)resource;
-            String entryName = "persons/" + person.getId();
-            if (entryName.equals(gxRootRef)) {
-              Map<String, String> additionalAttribs = new HashMap<String, String>(1);
-              additionalAttribs.put(GX_ROOT, Boolean.TRUE.toString());
-              additionalAttribs.put(DC_MODIFIED, GedcomxTimeStampUtil.formatAsXmlUTC(modifiedDate));
-              gedxOutputStream.addResource( GedcomxConstants.GEDCOMX_XML_MEDIA_TYPE
-                , entryName
-                , person
-                , null
-                , additionalAttribs);
-            } else {
-              gedxOutputStream.addResource(GedcomxConstants.GEDCOMX_XML_MEDIA_TYPE
-                , entryName
-                , person
-                , null);
-            }
-          } else if (resource instanceof Relationship) {
-            Relationship relationship = (Relationship)resource;
-            gedxOutputStream.addResource(GedcomxConstants.GEDCOMX_XML_MEDIA_TYPE
-              , "\\relationships\\" + relationship.getId()
-              , relationship
-              , null);
-          } else if (resource instanceof Agent) {
-            Agent person = (Agent) resource;
-            gedxOutputStream.addResource(GedcomxConstants.GEDCOMX_XML_MEDIA_TYPE
-              , "contributors/" + person.getId()
-              , person
-              , null);
-          } else if (resource instanceof SourceDescription) {
-            SourceDescription description = (SourceDescription)resource;
-            gedxOutputStream.addResource(GedcomxConstants.GEDCOMX_XML_MEDIA_TYPE
-              , "descriptions/" + description.getId()
-              , description
-              , null);
-          } else {
-            // TODO: Dublin Core ObjectFactory Types?
-          }
-        }
-      } finally {
+        gedxOutputStream.addResource( bundle );
+      }
+      finally {
         gedxOutputStream.close();
       }
 
@@ -146,13 +102,8 @@ public class GedcomxFileWriteReadTest {
                 assertEquals(value, entry.getValue());
               }
               assertTrue(entryAttributes.containsKey(Attributes.Name.CONTENT_TYPE.toString()));
-              if (name.equals(gxRootRef)) {
-                assertTrue(Boolean.parseBoolean(entryAttributes.get(GX_ROOT)));
-                assertEquals(entryAttributes.get(DC_MODIFIED), GedcomxTimeStampUtil.formatAsXmlUTC(modifiedDate));
-              }
-
               Object resource = gedxFile.readResource(gedxEntry);
-              ExampleGedcomxFileData.assertContains(resource, resources);
+              ExampleGedcomxFileData.assertContains((Gedcomx) resource, bundle);
             }
           }
         } finally {

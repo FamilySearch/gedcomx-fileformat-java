@@ -15,12 +15,9 @@
  */
 package org.gedcomx.fileformat;
 
-import org.gedcomx.conclusion.Person;
-import org.gedcomx.conclusion.Relationship;
-import org.gedcomx.contributor.Agent;
-import org.gedcomx.rt.GedcomxConstants;
-import org.gedcomx.source.SourceDescription;
+import org.gedcomx.Gedcomx;
 import org.gedcomx.rt.GedcomNamespaceManager;
+import org.gedcomx.rt.GedcomxConstants;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -52,7 +49,7 @@ public class DefaultXMLSerialization implements GedcomxEntrySerializer, GedcomxE
       JAXBContext context = newContext(classes);
       this.unmarshaller = context.createUnmarshaller();
       this.marshaller = context.createMarshaller();
-      this.marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", new GedcomNamespaceManager(Person.class));
+      this.marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", new GedcomNamespaceManager(Gedcomx.class));
       if (pretty) {
         this.marshaller.setProperty("jaxb.formatted.output", Boolean.TRUE);
       }
@@ -113,11 +110,8 @@ public class DefaultXMLSerialization implements GedcomxEntrySerializer, GedcomxE
    * @throws JAXBException
    */
   private static JAXBContext newContext(Class<?>... classes) throws JAXBException {
-    Set<Class<?>> contextClasses = new HashSet<Class<?>>(Arrays.asList(
-        Person.class
-      , Agent.class
-      , Relationship.class
-      , SourceDescription.class));
+    Set<Class<?>> contextClasses = new HashSet<Class<?>>();
+    contextClasses.add(Gedcomx.class);
     contextClasses.addAll(Arrays.asList(classes));
     return JAXBContext.newInstance((Class<?>[]) contextClasses.toArray(new Class<?>[contextClasses.size()]));
   }

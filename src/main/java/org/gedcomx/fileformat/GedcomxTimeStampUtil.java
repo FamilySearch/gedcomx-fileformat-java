@@ -22,8 +22,10 @@ import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
 public class GedcomxTimeStampUtil {
+
   private static final DatatypeFactory DATATYPE_FACTORY;
   private static final TimeZone UTC_TIME_ZONE;
+
   static {
     try {
       DATATYPE_FACTORY = DatatypeFactory.newInstance();

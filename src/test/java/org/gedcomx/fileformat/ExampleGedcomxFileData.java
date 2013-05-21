@@ -15,6 +15,7 @@
  */
 package org.gedcomx.fileformat;
 
+import org.gedcomx.Gedcomx;
 import org.gedcomx.common.ResourceReference;
 import org.gedcomx.common.URI;
 import org.gedcomx.conclusion.*;
@@ -23,14 +24,14 @@ import org.gedcomx.types.GenderType;
 import org.gedcomx.types.NameType;
 import org.gedcomx.types.RelationshipType;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
+import static org.testng.Assert.assertEquals;
 
 
 public class ExampleGedcomxFileData {
-  public static List<Object> create() {
+  public static Gedcomx create() {
     ///////////////////////////////////////////////////////////////////////////////////////
     // primary
 
@@ -183,49 +184,21 @@ public class ExampleGedcomxFileData {
     ///////////////////////////////////////////////////////////////////////////////////////
     // build list of objects
 
-    List<Object> resources = new ArrayList<Object>();
-    resources.add(searchedPerson1);
-    resources.add(searchedPerson1Father);
-    resources.add(searchedPerson1Mother);
-    resources.add(searchedPerson1Spouse);
-    resources.add(searchedPerson1Child);
-    resources.add(relToFather);
-    resources.add(relToMother);
-    resources.add(relToSpouse);
-    resources.add(relToChild);
-
+    Gedcomx resources = new Gedcomx();
+    resources.setPersons(Arrays.asList(searchedPerson1, searchedPerson1Father, searchedPerson1Mother, searchedPerson1Child));
+    resources.setRelationships(Arrays.asList(relToFather, relToMother, relToSpouse, relToChild));
     return resources;
   }
 
-  public static void assertContains (Object actualValue, List<Object> expectedValues) {
-    if (actualValue instanceof Person) {
-      Person actual = (Person)actualValue;
-      boolean found = false;
-      for (Object obj : expectedValues) {
-        if (obj instanceof Person) {
-          Person expected = (Person)obj;
-          if (actual.getId().equals(expected.getId())) {
-            found = true;
-            break;
-          }
-        }
-      }
-      assertTrue(found);
-    } else if (actualValue instanceof Relationship) {
-      Relationship actual = (Relationship)actualValue;
-      boolean found = false;
-      for (Object obj : expectedValues) {
-        if (obj instanceof Relationship) {
-          Relationship expected = (Relationship)obj;
-          if (actual.getId().equals(expected.getId())) {
-            found = true;
-            break;
-          }
-        }
-      }
-      assertTrue(found);
-    } else {
-      fail("actualValue was not an expected type; actual type is " + actualValue.getClass().getName());
+  public static void assertContains (Gedcomx actual, Gedcomx expected) {
+    for (int i = 0; i < actual.getPersons().size(); i++) {
+      Person person = actual.getPersons().get(i);
+      assertEquals(person.getId(), expected.getPersons().get(i).getId());
+    }
+
+    for (int i = 0; i < expected.getRelationships().size(); i++) {
+      Relationship relationship = expected.getRelationships().get(i);
+      assertEquals(relationship.getId(), expected.getRelationships().get(i).getId());
     }
   }
 }

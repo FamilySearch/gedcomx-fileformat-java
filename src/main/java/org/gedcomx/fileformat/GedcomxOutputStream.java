@@ -15,6 +15,9 @@
  */
 package org.gedcomx.fileformat;
 
+import org.gedcomx.Gedcomx;
+import org.gedcomx.rt.GedcomxConstants;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Date;
@@ -30,6 +33,7 @@ public class GedcomxOutputStream {
   private final GedcomxEntrySerializer serializer;
   private final JarOutputStream gedxOutputStream;
   private final Manifest mf;
+  private int entryCount = 0;
 
   public GedcomxOutputStream(OutputStream gedxOutputStream, GedcomxEntrySerializer serializer) throws IOException {
     this.serializer = serializer;
@@ -63,6 +67,44 @@ public class GedcomxOutputStream {
    */
   public void addAttribute(String name, String value) {
     this.mf.getMainAttributes().putValue(name, value);
+  }
+
+  /**
+   * Add a resource to the GEDCOM X output stream.
+   *
+   * @param resource The resource.
+   * @throws IOException
+   */
+  public void addResource(Gedcomx resource) throws IOException {
+    addResource(resource, new Date());
+  }
+
+  /**
+   * Add a resource to the GEDCOM X output stream.
+   *
+   * @param resource The resource.
+   * @param lastModified timestamp when the resource was last modified (can be null)
+   * @throws IOException
+   */
+  public void addResource(Gedcomx resource, Date lastModified) throws IOException {
+    StringBuilder entryName = new StringBuilder("tree");
+    if (this.entryCount > 0) {
+      entryName.append(this.entryCount);
+    }
+    entryName.append(".xml");
+    addResource(entryName.toString(), resource, lastModified);
+  }
+
+  /**
+   * Add a resource to the GEDCOM X output stream.
+   *
+   * @param entryName The name by which this resource shall be known within the GEDCOM X file.
+   * @param resource The resource.
+   * @param lastModified timestamp when the resource was last modified (can be null)
+   * @throws IOException
+   */
+  public void addResource(String entryName, Gedcomx resource, Date lastModified) throws IOException {
+    addResource(GedcomxConstants.GEDCOMX_XML_MEDIA_TYPE, entryName, resource, lastModified, null);
   }
 
   /**
@@ -121,6 +163,7 @@ public class GedcomxOutputStream {
 
     this.gedxOutputStream.putNextEntry(gedxEntry);
     this.serializer.serialize(resource, this.gedxOutputStream);
+    this.entryCount++;
   }
 
   private boolean isKnownContentType(String contentType) {
