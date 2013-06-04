@@ -8,7 +8,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <gedcomx-java.version>0.39.0</gedcomx-java.version>
+    <gedcomx-java.version>1.0.0.M1</gedcomx-java.version>
     <testng.version>6.5.2</testng.version>
   </properties>
 
@@ -29,7 +29,7 @@
     <dependency>
       <groupId>com.sun.jersey</groupId>
       <artifactId>jersey-client</artifactId>
-      <version>1.5</version>
+      <version>1.11</version>
     </dependency>
     <dependency>
       <groupId>org.gedcomx</groupId>
