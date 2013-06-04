@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.gedcomx</groupId>
   <artifactId>gedcomx-fileformat</artifactId>
-  <version>1.0.0.M1</version>
+  <version>1.0.1.M1-SNAPSHOT</version>
   <name>GEDCOM X - File Format Support</name>
 
   <properties>
