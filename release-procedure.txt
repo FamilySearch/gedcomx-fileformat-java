@@ -1,4 +1,0 @@
-The build for the GEDCOM X File Format is at Cloudbees. Just run the release build[1], specifying the release version and the next development version.
-
-[1] https://gedcom.ci.cloudbees.com/job/gedcomx-java-fileformat-release/
-
